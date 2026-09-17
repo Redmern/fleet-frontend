@@ -1,0 +1,66 @@
+<section id="install">
+    <div class="container">
+        <div class="section-heading">
+            <span class="kicker">Install</span>
+            <h2>Get fleet running.</h2>
+        </div>
+
+        <div class="install-steps">
+            <div class="install-step">
+                <h3><span class="step-num">01</span>One-liner install</h3>
+                <div class="platform-toggle" data-platform-toggle role="group" aria-label="Choose your platform">
+                    <button type="button" class="active" data-platform="windows">Windows</button>
+                    <button type="button" data-platform="linux">Linux</button>
+                </div>
+                <div class="code-block">
+                    <pre data-install-command data-windows="irm https://raw.githubusercontent.com/Redmern/fleet-tui/main/scripts/get-fleet.ps1 | iex" data-linux="curl -fsSL https://raw.githubusercontent.com/Redmern/fleet-tui/main/scripts/get-fleet.sh | sh">irm https://raw.githubusercontent.com/Redmern/fleet-tui/main/scripts/get-fleet.ps1 | iex</pre>
+                    <button type="button" class="copy-btn" data-copy-target="[data-install-command]">copy</button>
+                </div>
+                <p class="install-note">Downloads the latest release binary and verifies its checksum.</p>
+            </div>
+
+            <div class="install-step">
+                <h3><span class="step-num">02</span>Install with dependencies</h3>
+                <p style="color: var(--fg-dim); font-size: 0.9rem;">Add <code>-WithDeps</code> (Windows) or <code>--with-deps</code> (Linux) to also install WezTerm, Neovim, yazi, and git through your platform's package manager.</p>
+                <div class="platform-toggle" data-platform-toggle role="group" aria-label="Choose your platform">
+                    <button type="button" class="active" data-platform="windows">Windows</button>
+                    <button type="button" data-platform="linux">Linux</button>
+                </div>
+                <div class="code-block">
+                    <pre data-install-command data-windows="irm https://raw.githubusercontent.com/Redmern/fleet-tui/main/scripts/get-fleet.ps1 | iex -WithDeps" data-linux="curl -fsSL https://raw.githubusercontent.com/Redmern/fleet-tui/main/scripts/get-fleet.sh | sh -s -- --with-deps">irm https://raw.githubusercontent.com/Redmern/fleet-tui/main/scripts/get-fleet.ps1 | iex -WithDeps</pre>
+                    <button type="button" class="copy-btn" data-copy-target="[data-install-command]">copy</button>
+                </div>
+            </div>
+
+            <div class="install-step">
+                <h3><span class="step-num">03</span>Build from source</h3>
+                <p style="color: var(--fg-dim); font-size: 0.9rem;">
+                    Requires the .NET 10 SDK. Windows also needs Visual Studio Build Tools 2022 (Desktop development with C++);
+                    Linux needs <code>clang</code> and <code>zlib1g-dev</code>. Then run the local installer:
+                </p>
+                <div class="platform-toggle" data-platform-toggle role="group" aria-label="Choose your platform">
+                    <button type="button" class="active" data-platform="windows">Windows</button>
+                    <button type="button" data-platform="linux">Linux</button>
+                </div>
+                <div class="code-block">
+                    <pre data-install-command data-windows=".\install.ps1" data-linux="./install.sh">.\install.ps1</pre>
+                    <button type="button" class="copy-btn" data-copy-target="[data-install-command]">copy</button>
+                </div>
+                <p class="install-note">Also works on macOS via <code>./install.sh</code> — no prebuilt macOS binary is published.</p>
+            </div>
+
+            <div class="install-step">
+                <h3><span class="step-num">04</span>Uninstall</h3>
+                <div class="platform-toggle" data-platform-toggle role="group" aria-label="Choose your platform">
+                    <button type="button" class="active" data-platform="windows">Windows</button>
+                    <button type="button" data-platform="linux">Linux</button>
+                </div>
+                <div class="code-block">
+                    <pre data-install-command data-windows=".\install.ps1 -Uninstall" data-linux="./install.sh --uninstall">.\install.ps1 -Uninstall</pre>
+                    <button type="button" class="copy-btn" data-copy-target="[data-install-command]">copy</button>
+                </div>
+                <p class="install-note">Windows: add <code>-Purge</code> to also delete <code>%APPDATA%\fleet</code>.</p>
+            </div>
+        </div>
+    </div>
+</section>

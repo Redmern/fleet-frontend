@@ -1,0 +1,48 @@
+<section id="requirements">
+    <div class="container">
+        <div class="section-heading">
+            <span class="kicker">Requirements</span>
+            <h2>What you need before you install.</h2>
+        </div>
+
+        <div class="rule-columns">
+            <div class="rule-col">
+                <span class="rule-kicker">Terminal-native</span>
+                <p>No browser tab, no Electron shell. Everything happens inside WezTerm panes you already have open.</p>
+            </div>
+            <div class="rule-col">
+                <span class="rule-kicker">Single binary</span>
+                <p>NativeAOT-compiled C#/.NET. Nothing else to install to run fleet itself.</p>
+            </div>
+            <div class="rule-col">
+                <span class="rule-kicker">Bring your agent</span>
+                <p>Claude Code today — the pane it runs in is yours to configure.</p>
+            </div>
+        </div>
+
+        <div class="requirements-grid">
+            <ul class="req-list">
+                <li><span class="req-name">WezTerm</span> Fleet wires into WezTerm's config directly — it's the only supported terminal. <span class="req-tag required">required</span></li>
+                <li><span class="req-name">Git</span> Used for repo management and the finish (merge/push) workflow. <span class="req-tag required">required</span></li>
+                <li><span class="req-name">An AI harness</span> Claude Code today; the pane it runs in is yours to configure. <span class="req-tag required">required</span></li>
+                <li><span class="req-name">Nerd Font</span> Set in WezTerm, for status glyphs in the dashboard. <span class="req-tag optional">integration</span></li>
+                <li><span class="req-name">Neovim</span> With neo-tree and claudecode.nvim, for the in-terminal editor flow. <span class="req-tag optional">integration</span></li>
+                <li><span class="req-name">yazi</span> Used as the folder picker when adding a repository. <span class="req-tag optional">integration</span></li>
+            </ul>
+
+            <div class="platform-support">
+                <table>
+                    <thead>
+                        <tr><th>Platform</th><th>Distribution</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Windows</td><td>Native binary (x64)</td></tr>
+                        <tr><td>Linux</td><td>Native binary (x64)</td></tr>
+                        <tr><td>macOS</td><td>Build from source only — no published binary</td></tr>
+                    </tbody>
+                </table>
+                <p class="install-note">Fleet is NativeAOT-compiled C#/.NET — no separate runtime install on any platform.</p>
+            </div>
+        </div>
+    </div>
+</section>
