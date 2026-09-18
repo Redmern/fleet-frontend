@@ -192,8 +192,9 @@ code, pre, .mono {
     font-size: 1.05rem;
 }
 
-.brand .prompt-glyph {
+.brand .brand-icon {
     color: var(--green);
+    flex-shrink: 0;
 }
 
 .site-header nav {
