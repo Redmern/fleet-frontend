@@ -1,25 +1,25 @@
 <section id="features">
     <div class="container">
-        <div class="section-heading">
+        <div class="section-heading reveal">
             <span class="kicker">Features</span>
             <h2>Built around running several agents at once.</h2>
         </div>
 
         <div class="features-grid">
-            <div class="feature-card win-card">
+            <div class="feature-card win-card reveal">
                 <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">dispatch.sh</span></div>
                 <div class="win-body">
                     <h3><span class="status-dot working"></span>Multi-agent dispatch</h3>
-                    <p>Fan work out across several agents without cluttering your screen. Each runs in its own hidden pane.</p>
+                    <p>Fan work out across agents in hidden panes.</p>
                     <div class="feature-visual mono">$ fleet dispatch <span class="accent">"add pagination"</span> --project api</div>
                 </div>
             </div>
 
-            <div class="feature-card win-card">
+            <div class="feature-card win-card reveal">
                 <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">activity.log</span></div>
                 <div class="win-body">
                     <h3>Live activity dots</h3>
-                    <p>Every agent shows a colored dot with a hover tooltip naming its state — working, idle, waiting.</p>
+                    <p>A colored dot per agent — working, idle, waiting.</p>
                     <div class="feature-visual mono">
                         <div><span class="status-dot working"></span>agent-1 <span class="accent-yellow">working</span></div>
                         <div><span class="status-dot done"></span>agent-2 <span class="accent-green">done</span></div>
@@ -27,11 +27,11 @@
                 </div>
             </div>
 
-            <div class="feature-card win-card">
+            <div class="feature-card win-card reveal">
                 <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">finish.sh</span></div>
                 <div class="win-body">
                     <h3>Finish workflow</h3>
-                    <p>Merge a branch, optionally push, and clean up — from a menu, without leaving the terminal.</p>
+                    <p>Merge, push, and clean up — from a menu.</p>
                     <div class="feature-visual mono">
                         <div>&gt; Finish agent-2</div>
                         <div class="accent">  merge → push → cleanup</div>
@@ -39,20 +39,20 @@
                 </div>
             </div>
 
-            <div class="feature-card win-card">
+            <div class="feature-card win-card reveal">
                 <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">repos.toml</span></div>
                 <div class="win-body">
                     <h3>Repository management</h3>
-                    <p>Add, remove, and pull repos from the same dashboard you use to run agents against them.</p>
+                    <p>Add, remove, and pull repos from the dashboard.</p>
                     <div class="feature-visual mono">$ fleet <span class="accent-magenta">repo add</span> ~/code/api</div>
                 </div>
             </div>
 
-            <div class="feature-card win-card">
+            <div class="feature-card win-card reveal">
                 <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">keys.toml</span></div>
                 <div class="win-body">
                     <h3>Rebindable keys</h3>
-                    <p>Vim-style navigation (j/k/g/G), a leader-chord prefix, and per-action customization via an in-app editor.</p>
+                    <p>Vim-style navigation, leader-chord prefix, fully rebindable.</p>
                     <div class="feature-visual mono">
                         <div>j/k <span class="accent">move</span> · g/G <span class="accent">top/bottom</span></div>
                         <div>&lt;leader&gt;f <span class="accent">finish agent</span></div>
@@ -60,11 +60,11 @@
                 </div>
             </div>
 
-            <div class="feature-card win-card">
+            <div class="feature-card win-card reveal">
                 <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">update.log</span></div>
                 <div class="win-body">
                     <h3>Self-update</h3>
-                    <p>Ships as a single native binary. <code>fleet update</code> checks GitHub releases and swaps itself in place.</p>
+                    <p><code>fleet update</code> checks GitHub releases, swaps itself in place.</p>
                     <div class="feature-visual mono">$ fleet update
 <span class="accent-green">✓ checksum verified — updated to v0.9.2</span></div>
                 </div>

@@ -1,6 +1,6 @@
 <section id="install">
     <div class="container">
-        <div class="section-heading">
+        <div class="section-heading reveal">
             <span class="kicker">Install</span>
             <h2>Get fleet running.</h2>
         </div>
@@ -21,7 +21,7 @@
 
             <div class="install-step">
                 <h3><span class="step-num">02</span>Install with dependencies</h3>
-                <p style="color: var(--fg-dim); font-size: 0.9rem;">Add <code>-WithDeps</code> (Windows) or <code>--with-deps</code> (Linux) to also install WezTerm, Neovim, yazi, and git through your platform's package manager.</p>
+                <p class="install-note">Add <code>-WithDeps</code> (Windows) or <code>--with-deps</code> (Linux) to also install WezTerm, Neovim, yazi, and git through your platform's package manager.</p>
                 <div class="platform-toggle" data-platform-toggle role="group" aria-label="Choose your platform">
                     <button type="button" class="active" data-platform="windows">Windows</button>
                     <button type="button" data-platform="linux">Linux</button>
@@ -34,7 +34,7 @@
 
             <div class="install-step">
                 <h3><span class="step-num">03</span>Build from source</h3>
-                <p style="color: var(--fg-dim); font-size: 0.9rem;">
+                <p class="install-note">
                     Requires the .NET 10 SDK. Windows also needs Visual Studio Build Tools 2022 (Desktop development with C++);
                     Linux needs <code>clang</code> and <code>zlib1g-dev</code>. Then run the local installer:
                 </p>
