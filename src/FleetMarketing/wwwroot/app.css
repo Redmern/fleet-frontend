@@ -547,7 +547,7 @@ code, pre, .mono {
     overflow: hidden;
 }
 
-/* WezTerm's left-status bubble — a ship glyph + active project name,
+/* The tab bar's left-status bubble — a ship glyph + active project name,
    the same powerline-style pill fleet draws via window:set_left_status. */
 .wz-status {
     display: inline-flex;
