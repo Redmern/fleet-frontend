@@ -75,6 +75,20 @@ has a static `<noscript>` fallback and respects `prefers-reduced-motion`.
   `app.css` + `js/*.js` + `og-image.svg` + `favicon.svg` in the target directory; opened the
   exported `index.html` directly and it matches the live dev-server render.
 
+## Local development (hot reload)
+
+`dotnet watch --project src/FleetMarketing` serves the site at localhost:5272 and opens
+it in the browser, then keeps it in sync as you edit:
+
+- `wwwroot/**/*.css` — swapped into the open page live, no reload.
+- `.razor` / `.cs` — hot-reloaded into the running app, and the page refreshes itself.
+  Edits hot reload can't apply (e.g. some `Program.cs` changes) prompt for a restart;
+  press Ctrl+R in the watch terminal to restart manually.
+- `wwwroot/**/*.js` — the page refreshes itself.
+
+Stop any plain `dotnet run` first: it locks `bin/`, and the watch build then fails with
+"file is locked by FleetMarketing".
+
 ## Deploy target: GitHub Pages
 
 `.github/workflows/deploy.yml` builds the solution in Release, runs the SSG export into

@@ -17,7 +17,16 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    // In development, make the browser revalidate CSS/JS on every load so edits show up
+    // without a hard refresh (otherwise it heuristically caches app.css and serves it stale).
+    OnPrepareResponse = ctx =>
+    {
+        if (app.Environment.IsDevelopment())
+            ctx.Context.Response.Headers.CacheControl = "no-cache";
+    }
+});
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>();
