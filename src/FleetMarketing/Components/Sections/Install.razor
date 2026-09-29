@@ -16,12 +16,12 @@
                     <pre data-install-command data-windows="irm https://raw.githubusercontent.com/Redmern/fleet-tui/main/scripts/get-fleet.ps1 | iex" data-linux="curl -fsSL https://raw.githubusercontent.com/Redmern/fleet-tui/main/scripts/get-fleet.sh | sh">irm https://raw.githubusercontent.com/Redmern/fleet-tui/main/scripts/get-fleet.ps1 | iex</pre>
                     <button type="button" class="copy-btn" data-copy-target="[data-install-command]">copy</button>
                 </div>
-                <p class="install-note">Downloads the latest release binary and verifies its checksum.</p>
+                <p class="install-note">Downloads the latest release binary and verifies its checksum. That is still 0.5.24, without the built-in multiplexer; to try the fleet 0.6.0 prerelease, run <code>fleet update v0.6.0-rc.3</code> afterwards.</p>
             </div>
 
             <div class="install-step">
                 <h3><span class="step-num">02</span>Install with dependencies</h3>
-                <p class="install-note">Add <code>-WithDeps</code> (Windows) or <code>--with-deps</code> (Linux) to also install WezTerm, Neovim, yazi, and git through your platform's package manager.</p>
+                <p class="install-note">Add <code>-WithDeps</code> (Windows) or <code>--with-deps</code> (Linux) to also install WezTerm, Neovim, yazi, and git through your platform's package manager. From fleet 0.6.0, WezTerm is optional.</p>
                 <div class="platform-toggle" data-platform-toggle role="group" aria-label="Choose your platform">
                     <button type="button" class="active" data-platform="windows"><OsIcon Os="windows" />Windows</button>
                     <button type="button" data-platform="linux"><OsIcon Os="linux" />Linux</button>

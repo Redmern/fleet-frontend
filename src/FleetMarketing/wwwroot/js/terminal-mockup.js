@@ -119,7 +119,7 @@
         await wait(reduceMotion ? 200 : 500);
 
         // Matches the real workflow: dispatch spins up a sub-orchestrator that
-        // appears on its own WezTerm tab (fleet-tui docs/DESIGN.md).
+        // appears on its own tab (fleet-tui docs/DESIGN.md).
         var tabDot = addAgentTab("add-pagination");
 
         var row2 = el("div", "dashboard-row");

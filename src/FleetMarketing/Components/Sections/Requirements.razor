@@ -8,7 +8,7 @@
         <div class="rule-columns">
             <div class="rule-col reveal">
                 <span class="rule-kicker">Terminal-native</span>
-                <p>No browser tab, no Electron shell — just WezTerm panes.</p>
+                <p>No browser tab, no Electron shell. From 0.6.0, fleet brings its own panes, tabs and splits.</p>
             </div>
             <div class="rule-col reveal">
                 <span class="rule-kicker">Single binary</span>
@@ -22,10 +22,10 @@
 
         <div class="requirements-grid">
             <ul class="req-list">
-                <li><span class="req-name">WezTerm</span> The only supported terminal. <span class="req-tag required">required</span></li>
                 <li><span class="req-name">Git</span> For repo management and the finish workflow. <span class="req-tag required">required</span></li>
                 <li><span class="req-name">An AI harness</span> Claude Code today. <span class="req-tag required">required</span></li>
-                <li><span class="req-name">Nerd Font</span> For status glyphs in the dashboard. <span class="req-tag optional">integration</span></li>
+                <li><span class="req-name">Nerd Font</span> For the pill glyphs in the top bar and the dashboard's status glyphs. <span class="req-tag optional">recommended</span></li>
+                <li><span class="req-name">WezTerm</span> Optional from fleet 0.6.0 (required on 0.5.x). Run fleet inside WezTerm, or set <code>FLEET_MUX=wezterm</code>, and it uses WezTerm's panes. <span class="req-tag optional">integration</span></li>
                 <li><span class="req-name">Neovim</span> neo-tree + claudecode.nvim, for the editor flow. <span class="req-tag optional">integration</span></li>
                 <li><span class="req-name">yazi</span> Folder picker when adding a repository. <span class="req-tag optional">integration</span></li>
             </ul>
@@ -36,8 +36,8 @@
                         <tr><th>Platform</th><th>Distribution</th></tr>
                     </thead>
                     <tbody>
-                        <tr><td><span class="os-label"><OsIcon Os="windows" />Windows</span></td><td>Native binary (x64)</td></tr>
-                        <tr><td><span class="os-label"><OsIcon Os="linux" />Linux</span></td><td>Native binary (x64)</td></tr>
+                        <tr><td><span class="os-label"><OsIcon Os="windows" />Windows</span></td><td>Native binary (x64); includes the built-in multiplexer from 0.6.0</td></tr>
+                        <tr><td><span class="os-label"><OsIcon Os="linux" />Linux</span></td><td>Native binary (x64); includes the built-in multiplexer from 0.6.0</td></tr>
                         <tr><td><span class="os-label"><OsIcon Os="macos" />macOS</span></td><td>Build from source only — no published binary</td></tr>
                     </tbody>
                 </table>

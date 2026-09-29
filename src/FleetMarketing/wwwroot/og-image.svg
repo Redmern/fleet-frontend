@@ -7,7 +7,7 @@
   <circle cx="96" cy="88" r="8" fill="#f7768e"/>
   <circle cx="122" cy="88" r="8" fill="#e0af68"/>
   <circle cx="148" cy="88" r="8" fill="#9ece6a"/>
-  <text x="600" y="93" text-anchor="middle" font-family="Consolas, Menlo, monospace" font-size="16" fill="#565f89">wezterm — fleet</text>
+  <text x="600" y="93" text-anchor="middle" font-family="Consolas, Menlo, monospace" font-size="16" fill="#565f89">fleet</text>
 
   <text x="100" y="200" font-family="Consolas, Menlo, monospace" font-size="30" fill="#9ece6a">$ fleet</text>
   <text x="100" y="248" font-family="Consolas, Menlo, monospace" font-size="26" fill="#c0caf5">? Pick a project › fleet-frontend</text>

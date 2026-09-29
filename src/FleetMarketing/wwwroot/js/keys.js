@@ -18,6 +18,7 @@
         { key: "t", label: "home", top: true },
         { key: "i", label: "the idea", section: "the-idea" },
         { key: "h", label: "how it works", section: "how-it-works" },
+        { key: "m", label: "multiplexer", section: "multiplexer" },
         { key: "f", label: "features", section: "features" },
         { key: "r", label: "requirements", section: "requirements" },
         { key: "n", label: "install", section: "install" },
@@ -41,6 +42,7 @@
     var SECTION_LABELS = {
         "the-idea": "the idea",
         "how-it-works": "how it works",
+        multiplexer: "multiplexer",
         features: "features",
         requirements: "requirements",
         install: "install",
