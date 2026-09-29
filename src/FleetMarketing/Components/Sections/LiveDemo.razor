@@ -7,38 +7,13 @@
         </div>
 
         <div class="demo-window reveal">
-            <div class="terminal-window" data-terminal-mockup aria-hidden="true">
-                <!--
-                    Modeled on fleet's real tab bar (see fleet-tui docs/DESIGN.md,
-                    "The tab bar says what things are"): a left-status bubble with the
-                    ship glyph + active project name, and a tab per dashboard/agent —
-                    not a generic OS titlebar.
-                -->
-                <div class="terminal-titlebar">
-                    <div class="wz-status">
-                        <svg viewBox="0 0 32 32" width="12" height="12" fill="currentColor" aria-hidden="true">
-                            <rect x="15" y="6" width="2" height="9" rx="1" />
-                            <path d="M17 7 L23 9.5 L17 12 Z" />
-                            <rect x="12" y="15" width="8" height="5" rx="1" />
-                            <path d="M6 20 L26 20 L21 26 L11 26 Z" />
-                        </svg>
-                        fleet-frontend
-                    </div>
-                    <div class="wz-tabs" data-wz-tabs>
-                        <div class="wz-tab active">fleet</div>
-                    </div>
-                </div>
-                <div class="terminal-body" data-terminal-body>
-                    <!-- Populated and animated by js/terminal-mockup.js. Static fallback below renders with JS disabled. -->
-                    <noscript>
-                        <div class="terminal-line"><span class="prompt">$</span><span class="fill">fleet</span></div>
-                        <div class="terminal-line"><span class="fill">? Pick a project › fleet-frontend</span></div>
-                        <div class="terminal-line"><span class="fill">Opening dashboard for fleet-frontend…</span></div>
-                        <div class="terminal-line"><span class="prompt">$</span><span class="fill">fleet dispatch "add dark mode toggle"</span></div>
-                        <div class="terminal-line"><span class="status-dot done"></span><span class="fill">sub-orchestrator #2 — done</span></div>
-                    </noscript>
-                </div>
+            <!-- A real fleet session recorded as an asciicast; js/demo-player.js plays it. -->
+            <div class="demo-player" data-demo-player data-cast="casts/fleet-demo.cast" data-poster="0:05">
+                <noscript>
+                    <p class="demo-note">The recording needs JavaScript. It shows fleet opening a project, a sub-orchestrator starting an agent, and the agent's commit being approved from the notification center.</p>
+                </noscript>
             </div>
+            <p class="demo-note">A real session: fleet and Claude Code in a terminal, working on a small demo project. Sped up while Claude works.</p>
         </div>
     </div>
 </section>

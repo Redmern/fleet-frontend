@@ -524,123 +524,57 @@ code, pre, .mono {
     margin-top: 8px;
 }
 
-/* Terminal mockup — standalone showcase section (see/demo) */
+/* Live demo — a real fleet recording played by the vendored asciinema-player */
 
-.demo-window {
-    max-width: 860px;
-    margin: 0 auto;
+/* The recording is 120 columns, so this section gets a wider column than the rest. */
+#demo .container {
+    width: 100%;
+    max-width: calc(1100px + 48px);
 }
 
-.terminal-window {
-    background: var(--bg-inset);
+.demo-player {
+    /* Nerd Font icons (fleet's pills, neo-tree) come from a subset font; text uses the site's mono stack. */
+    --demo-font: "Cascadia Code", "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, "fleet-nerd-symbols", monospace;
     border: 1px solid var(--border);
     border-radius: 10px;
     box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.6);
     overflow: hidden;
+    background: #1a1b26;
 }
 
-.terminal-titlebar {
-    display: flex;
-    align-items: stretch;
-    background: var(--bg-raised);
-    border-bottom: 1px solid var(--border);
-    overflow: hidden;
-}
-
-/* The tab bar's left-status bubble — a ship glyph + active project name,
-   the same powerline-style pill fleet draws via window:set_left_status. */
-.wz-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45em;
-    padding: 0 14px;
-    background: var(--magenta);
-    color: var(--bg-inset);
-    font-size: 0.78rem;
-    font-weight: 700;
-    flex-shrink: 0;
-}
-
-.wz-tabs {
-    display: flex;
-    align-items: stretch;
-    flex: 1;
-    overflow: hidden;
-}
-
-.wz-tab {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 10px 16px;
-    font-size: 0.78rem;
+.demo-note {
+    margin-top: 12px;
+    text-align: center;
     color: var(--fg-muted);
-    border-right: 1px solid var(--border);
-    white-space: nowrap;
-    opacity: 0;
-    transform: translateY(-4px);
-    animation: wz-tab-in 0.3s ease forwards;
+    font-size: 0.8rem;
 }
 
-.wz-tab.active {
-    background: var(--bg-inset);
-    color: var(--fg);
+@font-face {
+    font-family: "fleet-nerd-symbols";
+    src: url("vendor/nerd-fonts/symbols-subset.woff2") format("woff2");
+    font-display: swap;
 }
 
-.wz-tab .wz-tab-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    flex-shrink: 0;
-}
-
-@keyframes wz-tab-in {
-    to { opacity: 1; transform: none; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .wz-tab {
-        animation: none;
-        opacity: 1;
-        transform: none;
-    }
-}
-
-.terminal-body {
-    padding: 20px;
-    min-height: 320px;
-    font-size: 0.9rem;
-}
-
-.terminal-line {
-    display: flex;
-    gap: 8px;
-    min-height: 1.4em;
-    white-space: pre-wrap;
-    word-break: break-word;
-}
-
-.terminal-line .prompt {
-    color: var(--green);
-    flex-shrink: 0;
-}
-
-.terminal-line .fill {
-    color: var(--fg);
-}
-
-.terminal-cursor {
-    display: inline-block;
-    width: 0.55em;
-    height: 1.1em;
-    background: var(--fg);
-    margin-left: 2px;
-    vertical-align: text-bottom;
-    animation: blink 1s steps(1) infinite;
-}
-
-@keyframes blink {
-    50% { opacity: 0; }
+/* Tokyo Night, matching the site. The recording itself is mostly truecolor. */
+.asciinema-player-theme-fleet {
+    --term-color-foreground: #c0caf5;
+    --term-color-background: #1a1b26;
+    --term-color-0: #15161e;
+    --term-color-1: #f7768e;
+    --term-color-2: #9ece6a;
+    --term-color-3: #e0af68;
+    --term-color-4: #7aa2f7;
+    --term-color-5: #bb9af7;
+    --term-color-6: #7dcfff;
+    --term-color-7: #a9b1d6;
+    --term-color-8: #414868;
+    --term-color-9: #f7768e;
+    --term-color-10: #9ece6a;
+    --term-color-11: #e0af68;
+    --term-color-12: #7aa2f7;
+    --term-color-13: #bb9af7;
+    --term-color-14: #7dcfff;
+    --term-color-15: #c0caf5;
 }
 
 .status-dot {
@@ -667,65 +601,6 @@ code, pre, .mono {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.4; }
 }
-
-.terminal-panes {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    min-height: 320px;
-}
-
-.terminal-pane {
-    padding: 20px;
-    font-size: 0.85rem;
-}
-
-.terminal-pane + .terminal-pane {
-    border-left: 1px solid var(--border);
-}
-
-.terminal-pane .pane-label {
-    color: var(--fg-muted);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 12px;
-}
-
-.dashboard-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6px 0;
-    color: var(--fg-dim);
-}
-
-.dashboard-row .agent-name {
-    color: var(--fg);
-}
-
-.dashboard-row .agent-state {
-    color: var(--fg-muted);
-    font-size: 0.8rem;
-}
-
-/* Branch-status pill — mirrors fleet's real dashboard row, e.g. `develop ↑1 ●`
-   (see fleet-tui's BranchStatus/FleetGlyphs: ahead/behind arrows, a dirty dot). */
-.branch-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    background: var(--bg-inset);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 1px 9px;
-    font-size: 0.76rem;
-    color: var(--fg-dim);
-}
-
-.branch-pill .ahead { color: var(--green); }
-.branch-pill .behind { color: var(--red); }
-.branch-pill .dirty { color: var(--yellow); }
 
 /* How it works */
 
@@ -1019,15 +894,6 @@ code, pre, .mono {
     .requirements-grid {
         grid-template-columns: 1fr;
     }
-
-    .terminal-panes {
-        grid-template-columns: 1fr;
-    }
-
-    .terminal-pane + .terminal-pane {
-        border-left: none;
-        border-top: 1px solid var(--border);
-    }
 }
 
 @media (max-width: 640px) {
@@ -1103,7 +969,7 @@ code, pre, .mono {
 /* Reduced motion */
 
 @media (prefers-reduced-motion: reduce) {
-    .terminal-cursor, .status-dot.working, .eyebrow::before, .flat-band::before {
+    .status-dot.working, .eyebrow::before, .flat-band::before {
         animation: none;
     }
 

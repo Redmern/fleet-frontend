@@ -17,8 +17,13 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// The live demo's recording (wwwroot/casts/*.cast) has no default content type, so it would 404.
+var contentTypes = new Microsoft.AspNetCore.StaticFiles.FileExtensionContentTypeProvider();
+contentTypes.Mappings[".cast"] = "application/x-asciicast";
+
 app.UseStaticFiles(new StaticFileOptions
 {
+    ContentTypeProvider = contentTypes,
     // In development, make the browser revalidate CSS/JS on every load so edits show up
     // without a hard refresh (otherwise it heuristically caches app.css and serves it stale).
     OnPrepareResponse = ctx =>
