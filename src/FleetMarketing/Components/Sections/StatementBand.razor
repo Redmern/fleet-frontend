@@ -1,0 +1,17 @@
+<section class="flat-band flat-band--@Color">
+    <div class="container">
+        <div class="corner-frame reveal">
+            <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+            <p class="band-kicker">@Kicker</p>
+            <h2 class="display-heading">@Heading</h2>
+            <p class="band-sub">@Sub</p>
+        </div>
+    </div>
+</section>
+
+@code {
+    [Parameter] public string Kicker { get; set; } = "";
+    [Parameter] public RenderFragment? Heading { get; set; }
+    [Parameter] public string Sub { get; set; } = "";
+    [Parameter] public string Color { get; set; } = "orange";
+}

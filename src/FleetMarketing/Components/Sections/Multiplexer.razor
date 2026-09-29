@@ -1,0 +1,100 @@
+<section id="multiplexer">
+    <div class="container">
+        <div class="section-heading reveal">
+            <span class="kicker">Built-in multiplexer</span>
+            <h2>Its own multiplexer. Any terminal will do.</h2>
+            <p>fleet ships fleetd, a built-in terminal multiplexer. Run <code>fleet</code> in any terminal (PowerShell, Windows Terminal, a Linux shell) and the project opens right there, with panes, tabs and splits.</p>
+        </div>
+
+        <div class="rule-columns">
+            <div class="rule-col reveal">
+                <span class="rule-kicker">A window, its projects</span>
+                <p>Each terminal window holds its own projects. From the Switch project picker, a lower-case letter brings a project into this window and an upper-case one opens it in a new window.</p>
+            </div>
+            <div class="rule-col reveal">
+                <span class="rule-kicker">Your shell</span>
+                <p>New panes open your default shell: Windows Terminal's default profile, else pwsh.</p>
+            </div>
+            <div class="rule-col reveal">
+                <span class="rule-kicker">fleet doctor</span>
+                <p>Also checks the built-in multiplexer and shows each project's Claude profile.</p>
+            </div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card win-card reveal">
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">attach.sh</span></div>
+                <div class="win-body">
+                    <h3><span class="status-dot working"></span>Sessions that survive the terminal</h3>
+                    <p>Detach and the agents keep running. Reattach later, or from another machine; its window title and clipboard come back to you.</p>
+                    <div class="feature-visual mono">
+                        <div>ctrl+s d <span class="accent">detach</span></div>
+                        <div>$ fleet attach <span class="accent">picks a project</span></div>
+                        <div>$ fleet attach <span class="accent-magenta">--ssh</span> devbox</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card win-card reveal">
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">restore.log</span></div>
+                <div class="win-body">
+                    <h3>Restores after a restart or crash</h3>
+                    <p>Tabs, splits, floating panes and each pane's folder come back. Claude sessions pick up where they were.</p>
+                    <div class="feature-visual mono">
+                        <div><span class="status-dot done"></span>tabs, splits, floats <span class="accent-green">restored</span></div>
+                        <div>claude <span class="accent">--continue</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card win-card reveal">
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">floats.txt</span></div>
+                <div class="win-body">
+                    <h3>Floating panes</h3>
+                    <p>The fleet menu, the file navigator and fleet config open as floats over whatever you're in. A permission prompt floats over the agent that asked.</p>
+                    <div class="feature-visual mono">
+                        <div>ctrl+s f <span class="accent">new float</span></div>
+                        <div>Approve this action? <span class="accent-yellow">Allow</span> / Deny</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card win-card reveal">
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">menu.txt</span></div>
+                <div class="win-body">
+                    <h3>An instant fleet menu</h3>
+                    <p>It opens in tens of milliseconds, and every screen in it draws once, without flicker.</p>
+                    <div class="feature-visual mono">
+                        <div>ctrl+enter <span class="accent">menu</span></div>
+                        <div>ctrl+s space <span class="accent">menu</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card win-card reveal">
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">embedded-keys.json</span></div>
+                <div class="win-body">
+                    <h3>Keyboard-first, tmux-style. The mouse works too.</h3>
+                    <p>Prefix <code>ctrl+s</code> pops up the keys it takes. Click to focus, drag dividers and floats, scroll, click tabs.</p>
+                    <div class="feature-visual mono">
+                        <div>% " <span class="accent">split</span> · c <span class="accent">tab</span> · z <span class="accent">zoom</span></div>
+                        <div>h j k l <span class="accent">focus</span> · [ <span class="accent">copy mode</span></div>
+                        <div>ctrl/alt+h j k l <span class="accent">panes and nvim splits</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card win-card reveal">
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">profiles.txt</span></div>
+                <div class="win-body">
+                    <h3>A Claude account per project</h3>
+                    <p>Pin a Claude account profile to a project, or let fleet pick one per folder. Work and personal accounts stay apart.</p>
+                    <div class="feature-visual mono">
+                        <div>work-api <span class="accent">work</span> <span class="accent-magenta">pinned</span></div>
+                        <div>side-project <span class="accent">personal</span> <span class="accent-green">from folder</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

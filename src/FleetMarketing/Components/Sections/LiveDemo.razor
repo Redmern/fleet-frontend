@@ -1,0 +1,44 @@
+<section id="demo">
+    <div class="container">
+        <div class="section-heading reveal">
+            <span class="kicker">See it live</span>
+            <h2>This is what it looks like.</h2>
+            <p>Pick a project, get a dashboard, dispatch a sub-orchestrator — all in the terminal you already have open.</p>
+        </div>
+
+        <div class="demo-window reveal">
+            <div class="terminal-window" data-terminal-mockup aria-hidden="true">
+                <!--
+                    Modeled on fleet's real tab bar (see fleet-tui docs/DESIGN.md,
+                    "The tab bar says what things are"): a left-status bubble with the
+                    ship glyph + active project name, and a tab per dashboard/agent —
+                    not a generic OS titlebar.
+                -->
+                <div class="terminal-titlebar">
+                    <div class="wz-status">
+                        <svg viewBox="0 0 32 32" width="12" height="12" fill="currentColor" aria-hidden="true">
+                            <rect x="15" y="6" width="2" height="9" rx="1" />
+                            <path d="M17 7 L23 9.5 L17 12 Z" />
+                            <rect x="12" y="15" width="8" height="5" rx="1" />
+                            <path d="M6 20 L26 20 L21 26 L11 26 Z" />
+                        </svg>
+                        fleet-frontend
+                    </div>
+                    <div class="wz-tabs" data-wz-tabs>
+                        <div class="wz-tab active">fleet</div>
+                    </div>
+                </div>
+                <div class="terminal-body" data-terminal-body>
+                    <!-- Populated and animated by js/terminal-mockup.js. Static fallback below renders with JS disabled. -->
+                    <noscript>
+                        <div class="terminal-line"><span class="prompt">$</span><span class="fill">fleet</span></div>
+                        <div class="terminal-line"><span class="fill">? Pick a project › fleet-frontend</span></div>
+                        <div class="terminal-line"><span class="fill">Opening dashboard for fleet-frontend…</span></div>
+                        <div class="terminal-line"><span class="prompt">$</span><span class="fill">fleet dispatch "add dark mode toggle"</span></div>
+                        <div class="terminal-line"><span class="status-dot done"></span><span class="fill">sub-orchestrator #2 — done</span></div>
+                    </noscript>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
