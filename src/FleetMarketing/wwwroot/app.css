@@ -478,7 +478,7 @@ code, pre, .mono {
     background: var(--bg-inset);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 16px 52px 16px 18px;
+    padding: 16px 64px 16px 18px;
     overflow-x: auto;
 }
 
@@ -1041,6 +1041,22 @@ code, pre, .mono {
 
     .features-grid {
         grid-template-columns: 1fr;
+    }
+
+    /* Name, description and tag don't fit one line on a phone: name on top,
+       the description below with its tag inline. */
+    .req-list li {
+        display: block;
+    }
+
+    .req-list .req-name {
+        display: block;
+        margin-bottom: 2px;
+    }
+
+    /* No room for the OS icons next to the eyebrow; the blue band lists them. */
+    .eyebrow-os {
+        display: none;
     }
 
     .site-header nav {
