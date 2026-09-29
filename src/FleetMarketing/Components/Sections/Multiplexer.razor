@@ -9,7 +9,7 @@
         <div class="rule-columns">
             <div class="rule-col reveal">
                 <span class="rule-kicker">A window, its projects</span>
-                <p>Each terminal window holds its own projects. From the Switch project picker, a lower-case letter brings a project into this window and an upper-case one opens it in a new window.</p>
+                <p>Each terminal window holds its own projects. From the Switch project picker, a lower-case letter brings a project into this window and an upper-case one opens it in a new window, in the same terminal profile and Claude account.</p>
             </div>
             <div class="rule-col reveal">
                 <span class="rule-kicker">Your shell</span>
@@ -31,6 +31,7 @@
                         <div>ctrl+s d <span class="accent">detach</span></div>
                         <div>$ fleet attach <span class="accent">picks a project</span></div>
                         <div>$ fleet attach <span class="accent-magenta">--ssh</span> devbox</div>
+                        <div>$ fleet daemon stop <span class="accent">save and stop</span></div>
                     </div>
                 </div>
             </div>
@@ -39,7 +40,7 @@
                 <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">restore.log</span></div>
                 <div class="win-body">
                     <h3>Restores after a restart or crash</h3>
-                    <p>Tabs, splits, floating panes and each pane's folder come back. Claude sessions pick up where they were.</p>
+                    <p>Tabs, splits, floating panes and each pane's folder come back, after a crash or after <code>fleet daemon stop</code>. Claude sessions pick up where they were.</p>
                     <div class="feature-visual mono">
                         <div><span class="status-dot done"></span>tabs, splits, floats <span class="accent-green">restored</span></div>
                         <div>claude <span class="accent">--continue</span></div>
