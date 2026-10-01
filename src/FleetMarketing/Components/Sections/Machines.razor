@@ -1,0 +1,77 @@
+<section id="machines">
+    <div class="container">
+        <div class="section-heading reveal">
+            <span class="kicker">Across machines</span>
+            <h2>Projects from every machine, in one window.</h2>
+            <p>Connect to fleet on another machine over ssh. Its projects show up in your switcher, and open in this window or a new one, while their panes keep running over there.</p>
+        </div>
+
+        <div class="rule-columns">
+            <div class="rule-col reveal">
+                <span class="rule-kicker">Just ssh</span>
+                <p>fleet starts ssh itself. The other machine needs fleet on its PATH, or <code>FLEET_REMOTE_COMMAND</code> naming it.</p>
+            </div>
+            <div class="rule-col reveal">
+                <span class="rule-kicker">Always a way back</span>
+                <p>Switch project always opens this machine's switcher, wherever you are.</p>
+            </div>
+            <div class="rule-col reveal">
+                <span class="rule-kicker">Keeps running</span>
+                <p>Disconnecting closes the view here. The panes keep running on the remote.</p>
+            </div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card win-card reveal">
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">remotes.txt</span></div>
+                <div class="win-body">
+                    <h3>Remote machines</h3>
+                    <p>Fleet menu › Remote machines. Connect to another machine; if ssh asks for a password or to trust a new host key, the question appears in a small dialog.</p>
+                    <div class="feature-visual mono">
+                        <div>r <span class="accent">remote machines</span></div>
+                        <div>n <span class="accent-magenta">user@homelab</span></div>
+                        <div>d <span class="accent">disconnect</span> · enter <span class="accent">answer or retry</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card win-card reveal">
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">switch.txt</span></div>
+                <div class="win-body">
+                    <h3>Switch project across machines</h3>
+                    <p>With a machine connected, the switcher gets a tab per remote, named after its hostname. It lists every project saved there; opening one that isn't running starts it on that machine first.</p>
+                    <div class="feature-visual mono">
+                        <div>All · this machine · <span class="accent-magenta">homelab</span></div>
+                        <div>h l <span class="accent">switch tabs</span></div>
+                        <div>enter <span class="accent">this window</span> · A-Z <span class="accent">new window</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card win-card reveal">
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">remote-window.txt</span></div>
+                <div class="win-body">
+                    <h3>Remote projects in your window</h3>
+                    <p>The remote fleet draws the project and yours shows it. Keys, mouse, splits, tabs, floats, copy mode and the fleet menu all act on the remote. One window at a time follows a given machine.</p>
+                    <div class="feature-visual mono">
+                        <div><span class="accent-magenta">shop @@homelab</span> <span class="accent">in the tab bar</span></div>
+                        <div>ctrl+enter <span class="accent">its menu, on the remote</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card win-card reveal">
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">sessions.txt</span></div>
+                <div class="win-body">
+                    <h3>Sessions</h3>
+                    <p>Save a window's projects as a session, remote ones included. Opening it starts the projects, reconnects their machines and brings them back in one window.</p>
+                    <div class="feature-visual mono">
+                        <div>w <span class="accent">save window as session</span></div>
+                        <div>$ fleet <span class="accent">Projects · Sessions</span></div>
+                        <div>d <span class="accent">remove a session; projects stay</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

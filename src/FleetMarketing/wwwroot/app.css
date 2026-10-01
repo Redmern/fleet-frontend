@@ -685,6 +685,13 @@ code, pre, .mono {
         0 16px 28px -14px color-mix(in srgb, var(--card-accent) 60%, transparent);
 }
 
+/* Four cards: two rows of two instead of three and one. */
+@media (min-width: 901px) {
+    #machines .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 .features-grid .feature-card:nth-child(6n+1) { --card-accent: var(--orange); }
 .features-grid .feature-card:nth-child(6n+2) { --card-accent: var(--cyan); }
 .features-grid .feature-card:nth-child(6n+3) { --card-accent: var(--blue); }
