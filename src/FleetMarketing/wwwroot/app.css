@@ -1682,6 +1682,15 @@ html:not(.js) .ship-rail,
     text-anchor: middle;
 }
 
+.ship-hull-text {
+    fill: #24283b;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 700;
+    text-anchor: middle;
+    letter-spacing: 0.12em;
+}
+
 .ship-box-text {
     fill: #13141c;
     font-family: var(--font-mono);
