@@ -1471,7 +1471,7 @@ body.has-statusline {
 }
 
 .js .ship-it:not(.ship-static) {
-    height: 460vh;
+    height: 640vh;
 }
 
 .ship-stage {
@@ -1689,6 +1689,17 @@ html:not(.js) .ship-rail,
     font-weight: 700;
     text-anchor: middle;
     letter-spacing: 0.12em;
+}
+
+.ship-prompt-text {
+    fill: #c0caf5;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    white-space: pre;
+}
+
+.ship-box-text.small {
+    font-size: 10px;
 }
 
 .ship-box-text {

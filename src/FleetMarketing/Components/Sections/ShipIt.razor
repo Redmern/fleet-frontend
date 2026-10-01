@@ -4,36 +4,45 @@
             <span class="kicker">How fleet ships</span>
             <ol class="ship-captions" aria-live="polite">
                 <li class="ship-caption" data-step="0">
-                    <span class="ship-step-num">01 / 05</span>
+                    <span class="ship-step-num">01 / 07</span>
                     <h3>A repository is a container.</h3>
                     <p>Self-contained: its own code, its own history, its own branches. Each one gets its own agent.</p>
                 </li>
                 <li class="ship-caption" data-step="1">
-                    <span class="ship-step-num">02 / 05</span>
-                    <h3>Your project is a ship.</h3>
-                    <p>Load its repositories and it sails as one: frontend, API, infra. The project's orchestrator is its captain.</p>
+                    <span class="ship-step-num">02 / 07</span>
+                    <h3>A project is all of them, headed for production.</h3>
+                    <p>Frontend, API, payments, infra: separate repositories, one product. A change usually touches several at once.</p>
                 </li>
                 <li class="ship-caption" data-step="2">
-                    <span class="ship-step-num">03 / 05</span>
-                    <h3>Without fleet: one container at a time.</h3>
-                    <p>You work through one repository after another, while the other containers and ships wait at the dock.</p>
+                    <span class="ship-step-num">03 / 07</span>
+                    <h3>A prompt hits the dock.</h3>
+                    <p><code>, add Apple Pay to checkout</code>. fleet's main orchestrator hands it out: web gets the Apple Pay button, api the new payment method, payments the merchant session, infra the merchant key.</p>
                 </li>
                 <li class="ship-caption" data-step="3">
-                    <span class="ship-step-num">04 / 05</span>
-                    <h3>With fleet: the whole fleet sails.</h3>
-                    <p>fleet's main orchestrator sends every project out at once. Each ship has its captain, every container its agent, each in its own git worktree.</p>
+                    <span class="ship-step-num">04 / 07</span>
+                    <h3>The changes ship together.</h3>
+                    <p>Every repository the feature touched goes aboard one ship: the project, with its orchestrator as captain.</p>
                 </li>
                 <li class="ship-caption" data-step="4">
-                    <span class="ship-step-num">05 / 05</span>
-                    <h3>Shipped.</h3>
-                    <p>Every project, every repository, at the same time. That's the whole idea.</p>
+                    <span class="ship-step-num">05 / 07</span>
+                    <h3>With fleet, four at once.</h3>
+                    <p>Other projects ship their features in the same crossing: offline mode for the mobile app, dark mode for the blog, CSV export for admin.</p>
+                </li>
+                <li class="ship-caption" data-step="5">
+                    <span class="ship-step-num">06 / 07</span>
+                    <h3>In production.</h3>
+                    <p>Four projects, every repository they touched, landed together.</p>
+                </li>
+                <li class="ship-caption" data-step="6">
+                    <span class="ship-step-num">07 / 07</span>
+                    <h3>Microservices? Still one ship.</h3>
+                    <p>A project with a dozen services loads them all onto one ship, every service with its own agent.</p>
                     <div class="ship-compare">
-                        <span class="ship-chip"><span class="ship-chip-dot solo"></span>without fleet · one container at a time</span>
-                        <span class="ship-chip"><span class="ship-chip-dot fleet"></span>with fleet · every ship at once</span>
+                        <span class="ship-chip"><span class="ship-chip-dot solo"></span>one repo at a time</span>
+                        <span class="ship-chip"><span class="ship-chip-dot fleet"></span>every repo, every project, at once</span>
                     </div>
                 </li>
-            </ol>
-        </div>
+            </ol>        </div>
 
         <div class="ship-scene" aria-hidden="true">
             <!-- Drawn and animated by js/ship-it.js; scroll position drives the story. -->
@@ -73,10 +82,12 @@
 
         <nav class="container ship-rail" aria-label="Story steps">
             <button type="button" data-goto="0"><span></span>Container</button>
-            <button type="button" data-goto="1"><span></span>Ship</button>
-            <button type="button" data-goto="2"><span></span>One at a time</button>
-            <button type="button" data-goto="3"><span></span>The fleet</button>
-            <button type="button" data-goto="4"><span></span>Shipped</button>
+            <button type="button" data-goto="1"><span></span>Project</button>
+            <button type="button" data-goto="2"><span></span>Prompt</button>
+            <button type="button" data-goto="3"><span></span>Ship it</button>
+            <button type="button" data-goto="4"><span></span>The fleet</button>
+            <button type="button" data-goto="5"><span></span>Production</button>
+            <button type="button" data-goto="6"><span></span>Microservices</button>
         </nav>
     </div>
 </section>
