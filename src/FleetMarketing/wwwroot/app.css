@@ -1459,3 +1459,273 @@ body.has-statusline {
         transition: none;
     }
 }
+
+/* "How fleet ships" — a pinned, scroll-driven story (js/ship-it.js).
+   With JS the section is tall and its stage sticks while you scroll through it; with reduced
+   motion (.ship-static) it is one still scene; without JS only the captions show. */
+
+.ship-it {
+    display: block;
+    min-height: 0;
+    padding: 0;
+}
+
+.js .ship-it:not(.ship-static) {
+    height: 460vh;
+}
+
+.ship-stage {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 88px 0 48px;
+}
+
+.js .ship-it:not(.ship-static) .ship-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+}
+
+.ship-head {
+    width: 100%;
+}
+
+.ship-head .kicker {
+    display: inline-block;
+    color: var(--magenta);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+}
+
+.ship-captions {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ship-caption h3 {
+    font-size: clamp(1.4rem, 3.2vw, 2.3rem);
+    line-height: 1.15;
+    margin: 4px 0 8px;
+}
+
+.ship-caption p {
+    color: var(--fg-dim);
+    max-width: 62ch;
+    margin: 0;
+}
+
+.ship-step-num {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--fg-muted);
+    letter-spacing: 0.08em;
+}
+
+/* Live: one caption at a time, cross-fading in place. */
+.ship-live .ship-captions {
+    display: grid;
+}
+
+.ship-live .ship-caption {
+    grid-area: 1 / 1;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+    pointer-events: none;
+}
+
+.ship-live .ship-caption.active {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+}
+
+/* Still and no-JS: every caption, as a list. */
+.ship-static .ship-caption,
+html:not(.js) .ship-caption {
+    margin-bottom: 18px;
+}
+
+.ship-compare {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.ship-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-raised);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--fg);
+}
+
+.ship-chip-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.ship-chip-dot.solo { background: var(--fg-muted); }
+.ship-chip-dot.fleet { background: var(--green); box-shadow: 0 0 8px var(--green); }
+
+.ship-scene {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: min(1200px, 100%);
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+/* While pinned, the scene gets whatever height the captions and rail leave, and the frame
+   hugs the drawing: as wide as fits, by width or by that height, at the drawing's ratio. */
+.ship-live .ship-scene {
+    container-type: size;
+}
+
+.ship-scene svg {
+    display: block;
+    aspect-ratio: 1200 / 640;
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(122, 162, 247, 0.06);
+}
+
+html:not(.js) .ship-scene,
+html:not(.js) .ship-rail,
+.ship-static .ship-rail {
+    display: none;
+}
+
+.ship-live .ship-scene svg {
+    width: min(100cqw, 100cqh * 1200 / 640);
+}
+
+.ship-rail {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 18px;
+}
+
+.ship-rail button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 2px;
+    border: 0;
+    background: none;
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.ship-rail button span {
+    width: 22px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border-bright);
+    transition: background 0.3s ease, width 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ship-rail button:hover,
+.ship-rail button:focus-visible {
+    color: var(--fg);
+}
+
+.ship-rail button.done span {
+    background: var(--blue);
+}
+
+.ship-rail button.active {
+    color: var(--fg);
+}
+
+.ship-rail button.active span {
+    width: 36px;
+    background: var(--cyan);
+    box-shadow: 0 0 10px var(--cyan);
+}
+
+/* SVG text and ambient motion */
+.ship-sign {
+    fill: var(--fg-muted);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-anchor: middle;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.ship-tag-text {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    text-anchor: middle;
+}
+
+.ship-box-text {
+    fill: #13141c;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 700;
+    text-anchor: middle;
+}
+
+.ship-star {
+    animation: ship-twinkle 3.6s ease-in-out infinite;
+}
+
+@keyframes ship-twinkle {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.9; }
+}
+
+@media (max-width: 640px) {
+    .ship-stage {
+        padding: 80px 0 44px;
+    }
+
+    .ship-rail {
+        gap: 4px 12px;
+    }
+
+    .ship-rail button {
+        font-size: 0.7rem;
+    }
+
+    .ship-rail button span {
+        width: 14px;
+    }
+
+    .ship-rail button.active span {
+        width: 22px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ship-star,
+    .ship-live .ship-caption,
+    .ship-rail button span {
+        animation: none;
+        transition: none;
+    }
+}

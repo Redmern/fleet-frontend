@@ -1,0 +1,82 @@
+<section id="ship-it" class="ship-it" data-ship-it>
+    <div class="ship-stage">
+        <div class="container ship-head">
+            <span class="kicker">How fleet ships</span>
+            <ol class="ship-captions" aria-live="polite">
+                <li class="ship-caption" data-step="0">
+                    <span class="ship-step-num">01 / 05</span>
+                    <h3>A repository is a container.</h3>
+                    <p>Self-contained: its own code, its own history, its own branches.</p>
+                </li>
+                <li class="ship-caption" data-step="1">
+                    <span class="ship-step-num">02 / 05</span>
+                    <h3>Together, they're the project you ship.</h3>
+                    <p>Frontend, API, infra, docs: separate containers, one cargo. fleet treats them as one project.</p>
+                </li>
+                <li class="ship-caption" data-step="2">
+                    <span class="ship-step-num">03 / 05</span>
+                    <h3>One agent is one ship.</h3>
+                    <p>Load a container, sail, unload, come back. Everything else waits its turn.</p>
+                </li>
+                <li class="ship-caption" data-step="3">
+                    <span class="ship-step-num">04 / 05</span>
+                    <h3>fleet gives you a fleet.</h3>
+                    <p>A ship per task, each in its own lane (its own git worktree), all sailing at once. You watch from the dashboard.</p>
+                </li>
+                <li class="ship-caption" data-step="4">
+                    <span class="ship-step-num">05 / 05</span>
+                    <h3>Same project. Shipped faster.</h3>
+                    <p>Four trips become one. That's the whole idea.</p>
+                    <div class="ship-compare">
+                        <span class="ship-chip"><span class="ship-chip-dot solo"></span>one ship · 4 trips</span>
+                        <span class="ship-chip"><span class="ship-chip-dot fleet"></span>fleet · 1 trip</span>
+                    </div>
+                </li>
+            </ol>
+        </div>
+
+        <div class="ship-scene" aria-hidden="true">
+            <!-- Drawn and animated by js/ship-it.js; scroll position drives the story. -->
+            <svg viewBox="0 0 1200 640" preserveAspectRatio="xMidYMid meet" data-ship-svg>
+                <defs>
+                    <linearGradient id="ship-sky" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0" stop-color="#13141c" />
+                        <stop offset="1" stop-color="#1f2335" />
+                    </linearGradient>
+                    <linearGradient id="ship-sea" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0" stop-color="#1e2a4a" />
+                        <stop offset="1" stop-color="#101320" />
+                    </linearGradient>
+                    <radialGradient id="ship-moon" cx="0.5" cy="0.5" r="0.5">
+                        <stop offset="0" stop-color="#c0caf5" stop-opacity="0.9" />
+                        <stop offset="0.35" stop-color="#7aa2f7" stop-opacity="0.25" />
+                        <stop offset="1" stop-color="#7aa2f7" stop-opacity="0" />
+                    </radialGradient>
+                    <linearGradient id="ship-beam" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0" stop-color="#e0af68" stop-opacity="0.55" />
+                        <stop offset="1" stop-color="#e0af68" stop-opacity="0" />
+                    </linearGradient>
+                    <filter id="ship-glow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="4" result="b" />
+                        <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+                    </filter>
+                </defs>
+                <rect width="1200" height="640" fill="url(#ship-sky)" />
+                <g data-layer="sky"></g>
+                <rect y="330" width="1200" height="310" fill="url(#ship-sea)" />
+                <g data-layer="quays"></g>
+                <g data-layer="lanes"></g>
+                <g data-layer="cargo"></g>
+                <g data-layer="fx"></g>
+            </svg>
+        </div>
+
+        <nav class="container ship-rail" aria-label="Story steps">
+            <button type="button" data-goto="0"><span></span>Container</button>
+            <button type="button" data-goto="1"><span></span>Project</button>
+            <button type="button" data-goto="2"><span></span>One ship</button>
+            <button type="button" data-goto="3"><span></span>A fleet</button>
+            <button type="button" data-goto="4"><span></span>Shipped</button>
+        </nav>
+    </div>
+</section>
