@@ -1,8 +1,9 @@
-// "How fleet ships", told in seven scroll steps: a repository is a container; a project is all
+// "How fleet ships", told in eight scroll steps: a repository is a container; a project is all
 // of them, headed for production; a prompt hits the dock ("add Apple Pay to checkout") and the
 // repo agents make their changes; the changed containers ship together on the project's ship;
-// with fleet, four projects cross at once; they land in production; and a microservices
-// project is still just one (well-loaded) ship.
+// with fleet, four projects cross at once and land in production; then a microservices
+// project gets its own prompt ("add OpenTelemetry tracing to every service") and twelve
+// changed services load onto one ship; and three more projects join it for a second crossing.
 //
 // Agents are small bots: one in each container (a repo agent in its own worktree), a captain
 // on each ship (the project's orchestrator) and a dockmaster on the quay (fleet's main
@@ -31,6 +32,7 @@
     }
     function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
     function seg(p, a, b) { return clamp((p - a) / (b - a), 0, 1); }
+    function within(p, range) { return p >= range[0] && p < range[1]; }
     function lerp(a, b, t) { return a + (b - a) * t; }
     function inOut(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
     function out(t) { return 1 - Math.pow(1 - t, 3); }
@@ -66,33 +68,44 @@
     var LIGHT = { off: "#565f89", idle: "#7dcfff", work: "#e0af68", done: "#9ece6a" };
     var LANES = [{ y: 392, s: 0.52 }, { y: 452, s: 0.62 }, { y: 516, s: 0.74 }, { y: 592, s: 0.88 }];   // far to near
 
-    // The steps, as scroll fractions.
+    // The story, as scroll fractions.
     var T = {
-        drops: [[0.02, 0.08], [0.10, 0.14], [0.13, 0.17], [0.16, 0.20]],
-        project: [0.18, 0.21],
-        prompt: [0.22, 0.24], typing: [0.24, 0.30], hit: [0.30, 0.32], work: [0.32, 0.36], ready: [0.36, 0.38],
-        shopIn: [0.38, 0.42], load: [0.42, 0.49], board: [0.48, 0.50],
-        othersIn: [0.52, 0.58], signal: [0.58, 0.62], cross: [0.62, 0.72],
-        land: 0.73, offRight: [0.82, 0.86],
-        bigIn: [0.84, 0.88], bigLoad: [0.87, 0.96], bigWork: 0.965
+        drops: [[0.016, 0.062], [0.078, 0.109], [0.101, 0.133], [0.125, 0.156]],
+        project: [0.14, 0.164],
+        prompt: [0.172, 0.187], typing: [0.187, 0.234], hit: [0.234, 0.25], work: [0.25, 0.281], ready: [0.281, 0.296],
+        shopIn: [0.296, 0.328], load: 0.328, board: [0.374, 0.39],
+        othersIn: [0.406, 0.452], signal: [0.452, 0.484], cross: [0.484, 0.562], land: 0.569,
+        offRight: [0.64, 0.67],
+        bigIn: [0.655, 0.69],
+        prompt2: [0.69, 0.70], typing2: [0.70, 0.745], hit2: [0.745, 0.76], bigLoad: 0.76,
+        join: [0.83, 0.875], signal2: [0.872, 0.89], cross2: [0.885, 0.955], land2: 0.955
     };
+    var PROMPTS = ["› , add Apple Pay to checkout", "› , add OpenTelemetry tracing to every service"];
 
-    // Projects. shop's four containers start on the dock; the other ships arrive loaded.
+    // Projects. shop's containers start on the dock; platform's drop aboard after its prompt;
+    // the others arrive loaded, each with its own prompt.
     var SHIPS = [
-        { name: "shop",   lane: 3, cols: 4, flag: "#bb9af7", dock: 420, end: 720 },
-        { name: "mobile", lane: 2, cols: 3, flag: "#7dcfff", dock: 455, end: 750, prompt: ", add offline mode" },
-        { name: "blog",   lane: 1, cols: 2, flag: "#ff9e64", dock: 490, end: 780, prompt: ", add dark mode" },
-        { name: "admin",  lane: 0, cols: 2, flag: "#9ece6a", dock: 525, end: 805, prompt: ", add CSV export" },
-        { name: "platform", lane: 3, cols: 4, tiers: 3, flag: "#f7768e", dock: 470, end: 470, big: true }
+        { name: "shop",     lane: 3, cols: 4, flag: "#bb9af7", dock: 420, end: 720, wave: 1, k: 0 },
+        { name: "mobile",   lane: 2, cols: 3, flag: "#7dcfff", dock: 455, end: 750, wave: 1, k: 1, prompt: ", add offline mode" },
+        { name: "blog",     lane: 1, cols: 2, flag: "#ff9e64", dock: 490, end: 780, wave: 1, k: 2, prompt: ", add dark mode" },
+        { name: "admin",    lane: 0, cols: 2, flag: "#9ece6a", dock: 525, end: 805, wave: 1, k: 3, prompt: ", add CSV export" },
+        { name: "platform", lane: 3, cols: 4, flag: "#f7768e", dock: 330, end: 620, wave: 2, k: 0, big: true },
+        { name: "ops",      lane: 2, cols: 2, flag: "#e0af68", dock: 640, end: 900, wave: 2, k: 1, prompt: ", add on-call alerts" },
+        { name: "data",     lane: 1, cols: 3, flag: "#73daca", dock: 660, end: 845, wave: 2, k: 2, prompt: ", add a daily revenue report" },
+        { name: "accounts", lane: 0, cols: 2, flag: "#7aa2f7", dock: 680, end: 870, wave: 2, k: 3, prompt: ", add two-factor login" }
     ];
+    // Drawn far to near within each wave, so nearer containers cover farther ones.
     var CONTAINERS = [
         { name: "web",      color: "#bb9af7", ship: 0, quay: { x: 40, y: 256 } },
         { name: "api",      color: "#7dcfff", ship: 0, quay: { x: 128, y: 256 } },
         { name: "payments", color: "#9ece6a", ship: 0, quay: { x: 40, y: 212 } },
         { name: "infra",    color: "#ff9e64", ship: 0, quay: { x: 128, y: 212 } },
-        { name: "ios",      color: "#7aa2f7", ship: 1 }, { name: "android", color: "#9ece6a", ship: 1 }, { name: "push", color: "#e0af68", ship: 1 },
+        { name: "dash",     color: "#bb9af7", ship: 3 }, { name: "reports", color: "#7dcfff", ship: 3 },
         { name: "site",     color: "#73daca", ship: 2 }, { name: "cms",     color: "#f7768e", ship: 2 },
-        { name: "dash",     color: "#bb9af7", ship: 3 }, { name: "reports", color: "#7dcfff", ship: 3 }
+        { name: "ios",      color: "#7aa2f7", ship: 1 }, { name: "android", color: "#9ece6a", ship: 1 }, { name: "push", color: "#e0af68", ship: 1 },
+        { name: "auth-ui",  color: "#7aa2f7", ship: 7 }, { name: "sso",     color: "#bb9af7", ship: 7 },
+        { name: "etl",      color: "#73daca", ship: 6 }, { name: "warehouse", color: "#ff9e64", ship: 6 }, { name: "bi", color: "#9ece6a", ship: 6 },
+        { name: "alerts",   color: "#f7768e", ship: 5 }, { name: "runbooks", color: "#7dcfff", ship: 5 }
     ];
     ["auth", "users", "cart", "catalog", "search", "orders", "payments", "inventory", "shipping", "emails", "reviews", "gateway"]
         .forEach(function (name, k) {
@@ -105,6 +118,24 @@
         var k = mates.indexOf(c), cols = ship.cols, deckW = cols * 86 - 6;
         c.deckX = -deckW / 2 + (k % cols) * 86;
         c.deckY = -60 - Math.floor(k / cols) * 46;
+    });
+    var shopIndex = 0;
+    CONTAINERS.forEach(function (c) { if (c.quay) c.index = shopIndex++; });
+
+    // Each ship's timeline: when it comes in, crosses, (for the first wave) sails off, and lands.
+    SHIPS.forEach(function (s) {
+        if (s.wave === 1) {
+            s.enter = s.k === 0 ? T.shopIn : [T.othersIn[0] + (s.k - 1) * 0.01, T.othersIn[1] - 0.02 + (s.k - 1) * 0.01];
+            s.sail = [T.cross[0] + s.k * 0.005, T.cross[1] + s.k * 0.003];
+            s.off = [T.offRight[0] + s.k * 0.004, T.offRight[1]];
+            s.landAt = T.land + s.k * 0.012;
+            s.signal = T.signal;
+        } else {
+            s.enter = s.big ? T.bigIn : [T.join[0] + (s.k - 1) * 0.01, T.join[1] - 0.02 + (s.k - 1) * 0.01];
+            s.sail = [T.cross2[0] + s.k * 0.004, T.cross2[1] + s.k * 0.002];
+            s.landAt = T.land2 + s.k * 0.01;
+            s.signal = T.signal2;
+        }
     });
     var CRANE_TIP = { x: 336, y: 124 };
     var DOCKMASTER = { x: 236, y: 287 };
@@ -180,7 +211,7 @@
         b.halo.setAttribute("opacity", Math.max(0, glow).toFixed(3));
     }
 
-    // The dockmaster (fleet's main orchestrator), its signal rings, and the prompt it receives.
+    // The dockmaster (fleet's main orchestrator), its signal rings, and the prompts it receives.
     var signal = [0, 1].map(function () {
         return el("circle", { cx: DOCKMASTER.x, cy: DOCKMASTER.y - 17, r: 0, fill: "none", stroke: LIGHT.work, "stroke-width": 2, opacity: 0 }, quays);
     });
@@ -188,9 +219,8 @@
     var dockChip = chip(quays, 300, 196, "main orchestrator", "#24283b", "#c0caf5");   // clear of the stack
 
     var cargo = layer("cargo");
-    var PROMPT = "› , add Apple Pay to checkout";
     var prompt = el("g", { opacity: 0, transform: "translate(24 150)" }, cargo);
-    el("rect", { width: 330, height: 36, rx: 9, fill: "#13141c", stroke: "#7aa2f7", "stroke-width": 1.5, filter: "url(#ship-glow)" }, prompt);
+    var promptBox = el("rect", { width: 330, height: 36, rx: 9, fill: "#13141c", stroke: "#7aa2f7", "stroke-width": 1.5, filter: "url(#ship-glow)" }, prompt);
     var promptText = el("text", { x: 14, y: 23, "class": "ship-prompt-text" }, prompt, "");
     var promptCaret = el("rect", { x: 14, y: 11, width: 8, height: 15, rx: 1, fill: "#c0caf5" }, prompt);
     var promptPulse = el("circle", { r: 5, fill: "#7aa2f7", opacity: 0, filter: "url(#ship-glow)" }, cargo);
@@ -235,10 +265,10 @@
         el("path", { d: "M" + (cabinX + 40) + ",-86 L" + (cabinX + 64) + ",-78 L" + (cabinX + 40) + ",-70 Z", fill: s.flag }, g);
         var captainSeat = el("g", {}, g);
         var captain = bot(captainSeat, cabinX + 18, -61, 8);
-        var promptChip = s.prompt ? chip(g, B + 150, -24, "› " + s.prompt, "#13141c", "#c0caf5") : null;   // ahead of the bow
         return {
             spec: s, n: n, lane: LANES[s.lane], g: g, wake: wake, captainSeat: captainSeat, captain: captain,
-            phase: n * 1.7, promptChip: promptChip,
+            phase: n * 1.7,
+            promptChip: s.prompt ? chip(g, B + 150, -24, "› " + s.prompt, "#13141c", "#c0caf5") : null,   // ahead of the bow
             landed: chip(g, B + 120, -24, "production ✓", LIGHT.done, "#13141c"),
             big: s.big ? chip(g, 0, -214, "12 microservices · one ship", "#f7768e", "#13141c") : null
         };
@@ -264,7 +294,7 @@
 
     var fx = layer("fx");
     var sparkColors = ["#7dcfff", "#bb9af7", "#ff9e64", "#9ece6a", "#e0af68"];
-    var sparks = ships.slice(0, 4).map(function () {
+    var sparks = ships.map(function () {
         var list = [];
         for (var k = 0; k < 10; k++) {
             list.push({ node: el("circle", { r: 2.6, fill: sparkColors[k % sparkColors.length], opacity: 0 }, fx), angle: (k / 10) * Math.PI * 2, dist: 60 + (k % 3) * 22 });
@@ -282,25 +312,19 @@
         var e = inOut(t);
         return { x: lerp(from.x, to.x, e), y: lerp(from.y, to.y, e) - lift * Math.sin(Math.PI * t), s: lerp(from.s, to.s, e) };
     }
-    function landedAt(n) { return T.land + n * 0.015; }   // when each ship's lights go green
+    function bigDrop(c) { var a = T.bigLoad + c.order * 0.0055; return [a, a + 0.016]; }   // when each service lands
 
     function render(p, now) {
         var amb = reduceMotion ? 0 : 1;
 
         // Ships ------------------------------------------------------------------------------
         var shipState = ships.map(function (sh) {
-            var n = sh.n, s = sh.spec, lane = sh.lane, x, enter, sail = 0, off = 0;
-            if (s.big) {
-                enter = seg(p, T.bigIn[0], T.bigIn[1]);
-                x = lerp(-360, s.dock, out(enter));
-            } else {
-                enter = n === 0 ? seg(p, T.shopIn[0], T.shopIn[1]) : seg(p, T.othersIn[0] + (n - 1) * 0.012, T.othersIn[1] - 0.024 + (n - 1) * 0.012);
-                sail = seg(p, T.cross[0] + n * 0.006, T.cross[1] + n * 0.004);
-                off = seg(p, T.offRight[0] + n * 0.005, T.offRight[1]);
-                x = lerp(-320, s.dock, out(enter));
-                if (sail > 0) x = lerp(s.dock, s.end, inOut(sail));
-                if (off > 0) x = lerp(s.end, 1500, inOut(off));
-            }
+            var s = sh.spec, lane = sh.lane;
+            var enter = seg(p, s.enter[0], s.enter[1]), sail = seg(p, s.sail[0], s.sail[1]);
+            var off = s.off ? seg(p, s.off[0], s.off[1]) : 0;
+            var x = lerp(-320, s.dock, out(enter));
+            if (sail > 0) x = lerp(s.dock, s.end, inOut(sail));
+            if (off > 0) x = lerp(s.end, 1500, inOut(off));
             var heavy = s.big ? 0.6 : 1;   // the big ship bobs slower and less
             var bob = amb * Math.sin(now / (760 / heavy) + sh.phase) * 2.6 * lane.s * heavy;
             var tilt = amb * Math.sin(now / (1000 / heavy) + sh.phase) * 0.9 * heavy;
@@ -310,45 +334,47 @@
             fade(sh.wake, Math.max(Math.sin(Math.PI * sail), Math.sin(Math.PI * enter) * 0.6, Math.sin(Math.PI * off)));
 
             // The captain: boards shop in step 4; the others sail in with theirs.
-            var board = n === 0 ? seg(p, T.board[0], T.board[1]) : 1;
+            var board = s.name === "shop" ? seg(p, T.board[0], T.board[1]) : 1;
             sh.captainSeat.setAttribute("transform", "translate(0 " + ((1 - back(board)) * -40).toFixed(1) + ")");
             fade(sh.captainSeat, board);
-            var cap = s.big ? (p >= T.bigWork ? "work" : "idle")
-                    : p >= landedAt(n) ? "done" : p >= T.signal[0] ? "work" : n === 0 ? (board > 0 ? "idle" : "off") : "idle";
+            var cap = p >= s.landAt ? "done" : p >= s.signal[0] ? "work" : board > 0 ? "idle" : "off";
             setBot(sh.captain, cap, now);
 
-            if (sh.promptChip) fade(sh.promptChip, seg(p, T.othersIn[0] + 0.02, T.othersIn[1]) * (1 - seg(p, T.cross[0], T.cross[0] + 0.03)));
-            fade(sh.landed, s.big ? 0 : seg(p, landedAt(n) + 0.005, landedAt(n) + 0.03) * (1 - off));
-            if (sh.big) fade(sh.big, seg(p, 0.96, 0.98));
+            if (sh.promptChip) fade(sh.promptChip, seg(p, s.enter[0] + 0.02, s.enter[1] + 0.01) * (1 - seg(p, s.sail[0], s.sail[0] + 0.03)));
+            fade(sh.landed, seg(p, s.landAt + 0.005, s.landAt + 0.03) * (1 - off));
+            if (sh.big) fade(sh.big, seg(p, T.bigLoad + 0.07, T.bigLoad + 0.08) * (1 - seg(p, T.join[0], T.join[0] + 0.02)));
             return { x: x, y: lane.y + bob, s: lane.s, opacity: opacity };
         });
 
-        // The prompt: appears, types, and hits the dockmaster ----------------------------------
-        fade(prompt, seg(p, T.prompt[0], T.prompt[1]) * (1 - seg(p, T.shopIn[0], T.shopIn[1])));
-        var typed = Math.round(PROMPT.length * seg(p, T.typing[0], T.typing[1]));
-        promptText.textContent = PROMPT.slice(0, typed);
+        // The prompts: each appears, types, and hits the dockmaster ----------------------------
+        var second = p >= 0.5;
+        var pr = second ? { show: T.prompt2, typing: T.typing2, hit: T.hit2, hide: T.join, text: PROMPTS[1] }
+                        : { show: T.prompt, typing: T.typing, hit: T.hit, hide: T.shopIn, text: PROMPTS[0] };
+        fade(prompt, seg(p, pr.show[0], pr.show[1]) * (1 - seg(p, pr.hide[0], pr.hide[0] + 0.02)));
+        promptBox.setAttribute("width", second ? 470 : 330);
+        var typed = Math.round(pr.text.length * seg(p, pr.typing[0], pr.typing[1]));
+        promptText.textContent = pr.text.slice(0, typed);
         promptCaret.setAttribute("x", (14 + typed * 8.4).toFixed(1));
-        fade(promptCaret, p < T.hit[1] ? (amb ? 0.4 + 0.6 * (Math.sin(now / 180) > 0 ? 1 : 0) : 1) : 0);
-        var hitT = seg(p, T.hit[0], T.hit[1]);
+        fade(promptCaret, p < pr.hit[1] ? (amb ? 0.4 + 0.6 * (Math.sin(now / 180) > 0 ? 1 : 0) : 1) : 0);
+        var hitT = seg(p, pr.hit[0], pr.hit[1]);
         promptPulse.setAttribute("cx", lerp(190, DOCKMASTER.x, inOut(hitT)).toFixed(1));
         promptPulse.setAttribute("cy", (lerp(186, DOCKMASTER.y - 20, inOut(hitT)) - 30 * Math.sin(Math.PI * hitT)).toFixed(1));
         fade(promptPulse, Math.sin(Math.PI * hitT));
         fade(projectBracket, seg(p, T.project[0], T.project[1]) * (1 - seg(p, T.prompt[0], T.prompt[1])));
         var prodOn = seg(p, T.project[0], T.project[1]);
-        fade(productionGlow, 0.25 + 0.35 * prodOn * (amb ? 0.7 + 0.3 * Math.sin(now / 500) : 1) + (p >= T.land ? 0.3 : 0));
-        if (prodOn <= 0) fade(productionGlow, 0);
+        fade(productionGlow, prodOn <= 0 ? 0 : 0.25 + 0.35 * prodOn * (amb ? 0.7 + 0.3 * Math.sin(now / 500) : 1) + (p >= T.land ? 0.3 : 0));
         productionSign.setAttribute("fill", prodOn > 0 ? LIGHT.done : "#565f89");
 
         // Containers -------------------------------------------------------------------------
         var cableOn = false;
-        boxes.forEach(function (b, k) {
+        boxes.forEach(function (b) {
             var c = b.spec, sh = shipState[c.ship], ship = SHIPS[c.ship];
             var deck = { x: sh.x + c.deckX * sh.s, y: sh.y + c.deckY * sh.s, s: sh.s };
-            var pos = deck, opacity = sh.opacity, state = "idle", changed = false;
+            var pos = deck, opacity = sh.opacity, state = "done", changed = true;
 
             if (c.quay) {                                       // shop: dock, prompt, crane, crossing
-                var drop = T.drops[k], tDrop = seg(p, drop[0], drop[1]);
-                var tLoad = seg(p, T.load[0] + k * 0.017, T.load[0] + k * 0.017 + 0.022);
+                var k = c.index, drop = T.drops[k], tDrop = seg(p, drop[0], drop[1]);
+                var tLoad = seg(p, T.load + k * 0.0133, T.load + k * 0.0133 + 0.017);
                 if (tLoad <= 0) {
                     pos = { x: c.quay.x, y: lerp(-90, c.quay.y, bounce(tDrop)), s: 1 };
                     opacity = tDrop > 0 ? Math.min(1, tDrop * 4) : 0;
@@ -358,58 +384,62 @@
                     cableOn = true;
                     cable.setAttribute("x1", CRANE_TIP.x); cable.setAttribute("y1", CRANE_TIP.y);
                     cable.setAttribute("x2", (pos.x + (W * pos.s) / 2).toFixed(1)); cable.setAttribute("y2", pos.y.toFixed(1));
-                } else opacity = sh.opacity;
-                var w0 = T.work[0] + k * 0.006, w1 = T.ready[0] + k * 0.005;
+                }
+                var w0 = T.work[0] + k * 0.0047, w1 = T.ready[0] + k * 0.004;
                 state = tDrop < 1 ? "off" : p < w0 ? "idle" : p < w1 ? "work" : "done";
                 changed = p >= w1;
 
                 // The main orchestrator hands the prompt to each repo agent.
-                var line = dispatch[k], dT = seg(p, T.hit[1] - 0.005 + k * 0.004, T.work[1]);
+                var line = dispatch[k], dT = seg(p, T.hit[1] - 0.004 + k * 0.003, T.work[1]);
                 line.setAttribute("x1", DOCKMASTER.x); line.setAttribute("y1", DOCKMASTER.y - 8);
                 line.setAttribute("x2", (c.quay.x + W - 17).toFixed(1)); line.setAttribute("y2", (c.quay.y + 14).toFixed(1));
                 fade(line, Math.sin(Math.PI * dT) * 0.9);
-            } else if (ship.big) {                              // the microservices ship gets stacked high
-                var tB = seg(p, T.bigLoad[0] + c.order * 0.0065, T.bigLoad[0] + c.order * 0.0065 + 0.018);
+            } else if (ship.big) {                              // each service lands aboard, works, finishes
+                var d = bigDrop(c), tB = seg(p, d[0], d[1]);
                 pos = { x: deck.x, y: lerp(deck.y - 260, deck.y, bounce(tB)), s: deck.s };
                 opacity = tB > 0 ? Math.min(1, tB * 5) * sh.opacity : 0;
-                state = tB <= 0 ? "off" : p >= T.bigWork ? "work" : "idle";
-            } else {                                            // other projects: changes ready aboard
-                state = "done";
-                changed = true;
+                state = tB <= 0 ? "off" : p < d[1] + 0.02 ? "work" : "done";
+                changed = p >= d[1] + 0.02;
             }
-            if (!ship.big && p >= landedAt(c.ship)) state = "done";
+            if (p >= ship.landAt) state = "done";
             setBox(b.g, pos.x, pos.y, pos.s, opacity);
             setBot(b.bot, state, now);
             fade(b.badge, changed ? 1 : 0);
         });
         fade(cable, cableOn ? 0.8 : 0);
 
-        // The dockmaster: takes the prompt, dispatches, signals the fleet out --------------------
-        var signalT = seg(p, T.signal[0], T.signal[1]);
-        var dmWorking = (p >= T.hit[1] - 0.01 && p < T.ready[1]) || (signalT > 0 && signalT < 1) || p >= T.bigWork;
+        // The dockmaster: takes each prompt, dispatches, signals each wave out ---------------------
+        var lastDrop = bigDrop({ order: 11 })[1] + 0.02;
+        var dmWorking = within(p, [T.hit[1] - 0.008, T.ready[1]]) || within(p, T.signal) ||
+                        within(p, [T.hit2[1] - 0.008, lastDrop]) || within(p, T.signal2);
         setBot(dockmaster, dmWorking ? "work" : p >= T.land ? "done" : "idle", now);
-        fade(dockChip, seg(p, T.hit[0], T.hit[1]) * (1 - seg(p, T.shopIn[0], T.shopIn[1])) + seg(p, T.signal[0], T.signal[0] + 0.02) * (1 - seg(p, T.cross[0] + 0.03, T.cross[0] + 0.06)));
+        var chipOn = seg(p, T.hit[0], T.hit[1]) * (1 - seg(p, T.shopIn[0], T.shopIn[1])) +
+                     seg(p, T.signal[0], T.signal[0] + 0.015) * (1 - seg(p, T.cross[0] + 0.02, T.cross[0] + 0.04)) +
+                     seg(p, T.hit2[0], T.hit2[1]) * (1 - seg(p, T.bigLoad + 0.03, T.bigLoad + 0.05)) +
+                     seg(p, T.signal2[0], T.signal2[0] + 0.01) * (1 - seg(p, T.cross2[0] + 0.02, T.cross2[0] + 0.04));
+        fade(dockChip, chipOn);
+        var sigT = Math.max(seg(p, T.signal[0], T.signal[1]) * (p < T.offRight[0] ? 1 : 0), seg(p, T.signal2[0], T.signal2[1]));
         signal.forEach(function (ring, k) {
-            var t = clamp(signalT * 1.6 - k * 0.6, 0, 1);
+            var t = clamp(sigT * 1.6 - k * 0.6, 0, 1);
             ring.setAttribute("r", (t * 130).toFixed(1));
             fade(ring, Math.sin(Math.PI * t) * 0.8);
         });
 
         // Sparkles over each ship as it lands in production.
         sparks.forEach(function (list, n) {
-            var t = seg(p, landedAt(n), landedAt(n) + 0.06), sh = shipState[n];
+            var s = SHIPS[n], t = seg(p, s.landAt, s.landAt + 0.05), sh = shipState[n];
             list.forEach(function (sp) {
                 var r = out(t) * sp.dist * sh.s * 1.5;
                 sp.node.setAttribute("cx", (sh.x + Math.cos(sp.angle) * r).toFixed(1));
                 sp.node.setAttribute("cy", (sh.y - 60 * sh.s + Math.sin(sp.angle) * r * 0.6).toFixed(1));
-                fade(sp.node, Math.sin(Math.PI * t));
+                fade(sp.node, Math.sin(Math.PI * t) * sh.opacity);
             });
         });
     }
 
     // ---- captions, rail, scroll ---------------------------------------------------------
 
-    var STEP_STARTS = [0, 0.10, 0.22, 0.38, 0.52, 0.72, 0.82];
+    var STEP_STARTS = [0, 0.078, 0.172, 0.296, 0.406, 0.562, 0.64, 0.83];
     var captions = section.querySelectorAll(".ship-caption");
     var railButtons = section.querySelectorAll("[data-goto]");
     var currentStep = -1;
@@ -435,7 +465,7 @@
     if (reduceMotion) {
         section.classList.add("ship-static");
         if (svg.pauseAnimations) svg.pauseAnimations();
-        render(T.land + 0.07, 0);   // the four projects, landed in production
+        render(1, 0);   // the second fleet, landed in production
         return;
     }
 
@@ -459,7 +489,7 @@
         button.addEventListener("click", function () {
             var total = section.offsetHeight - window.innerHeight;
             var top = section.getBoundingClientRect().top + window.scrollY;
-            var targets = [0.07, 0.19, 0.33, 0.50, 0.66, 0.79, 0.985];
+            var targets = [0.055, 0.15, 0.26, 0.37, 0.52, 0.62, 0.8, 0.985];
             window.scrollTo({ top: top + targets[n] * total, behavior: "smooth" });
         });
     });

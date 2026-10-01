@@ -4,39 +4,44 @@
             <span class="kicker">How fleet ships</span>
             <ol class="ship-captions" aria-live="polite">
                 <li class="ship-caption" data-step="0">
-                    <span class="ship-step-num">01 / 07</span>
+                    <span class="ship-step-num">01 / 08</span>
                     <h3>A repository is a container.</h3>
                     <p>Self-contained: its own code, its own history, its own branches. Each one gets its own agent.</p>
                 </li>
                 <li class="ship-caption" data-step="1">
-                    <span class="ship-step-num">02 / 07</span>
+                    <span class="ship-step-num">02 / 08</span>
                     <h3>A project is all of them, headed for production.</h3>
                     <p>Frontend, API, payments, infra: separate repositories, one product. A change usually touches several at once.</p>
                 </li>
                 <li class="ship-caption" data-step="2">
-                    <span class="ship-step-num">03 / 07</span>
+                    <span class="ship-step-num">03 / 08</span>
                     <h3>A prompt hits the dock.</h3>
                     <p><code>, add Apple Pay to checkout</code>. fleet's main orchestrator hands it out: web gets the Apple Pay button, api the new payment method, payments the merchant session, infra the merchant key.</p>
                 </li>
                 <li class="ship-caption" data-step="3">
-                    <span class="ship-step-num">04 / 07</span>
+                    <span class="ship-step-num">04 / 08</span>
                     <h3>The changes ship together.</h3>
                     <p>Every repository the feature touched goes aboard one ship: the project, with its orchestrator as captain.</p>
                 </li>
                 <li class="ship-caption" data-step="4">
-                    <span class="ship-step-num">05 / 07</span>
+                    <span class="ship-step-num">05 / 08</span>
                     <h3>With fleet, four at once.</h3>
                     <p>Other projects ship their features in the same crossing: offline mode for the mobile app, dark mode for the blog, CSV export for admin.</p>
                 </li>
                 <li class="ship-caption" data-step="5">
-                    <span class="ship-step-num">06 / 07</span>
+                    <span class="ship-step-num">06 / 08</span>
                     <h3>In production.</h3>
                     <p>Four projects, every repository they touched, landed together.</p>
                 </li>
                 <li class="ship-caption" data-step="6">
-                    <span class="ship-step-num">07 / 07</span>
-                    <h3>Microservices? Still one ship.</h3>
-                    <p>A project with a dozen services loads them all onto one ship, every service with its own agent.</p>
+                    <span class="ship-step-num">07 / 08</span>
+                    <h3>Microservices? Same story.</h3>
+                    <p><code>, add OpenTelemetry tracing to every service</code>. Each of the platform's twelve services gets its change from its own agent, and all twelve load onto one ship.</p>
+                </li>
+                <li class="ship-caption" data-step="7">
+                    <span class="ship-step-num">08 / 08</span>
+                    <h3>Then four ships again.</h3>
+                    <p>Three more projects join with their own prompts: on-call alerts for ops, a daily revenue report for data, two-factor login for accounts. The whole fleet lands in production.</p>
                     <div class="ship-compare">
                         <span class="ship-chip"><span class="ship-chip-dot solo"></span>one repo at a time</span>
                         <span class="ship-chip"><span class="ship-chip-dot fleet"></span>every repo, every project, at once</span>
@@ -88,6 +93,7 @@
             <button type="button" data-goto="4"><span></span>The fleet</button>
             <button type="button" data-goto="5"><span></span>Production</button>
             <button type="button" data-goto="6"><span></span>Microservices</button>
+            <button type="button" data-goto="7"><span></span>Four more</button>
         </nav>
     </div>
 </section>

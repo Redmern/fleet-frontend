@@ -1471,7 +1471,7 @@ body.has-statusline {
 }
 
 .js .ship-it:not(.ship-static) {
-    height: 640vh;
+    height: 760vh;
 }
 
 .ship-stage {
