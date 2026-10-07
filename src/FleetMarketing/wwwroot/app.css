@@ -398,7 +398,8 @@ code, pre, .mono {
     margin-bottom: 1.6em;
 }
 
-.hero h1 {
+.hero h1,
+.hero .hero-stage {
     font-size: clamp(2.8rem, 6.5vw, 5.2rem);
     font-weight: 800;
     letter-spacing: -0.02em;
@@ -406,52 +407,102 @@ code, pre, .mono {
     margin-bottom: 0.6em;
 }
 
-.hero h1 {
+.hero h1,
+.hero .hero-stage {
     color: #fff;
 }
 
 /* js/hero-orbs.js paints the heading's background with a spot of each orb's colour
    wherever an orb sits behind it (white elsewhere), and clips it to the letters. */
-.hero h1.orb-tint {
+.hero h1.orb-tint,
+.hero .hero-stage.orb-tint {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
 }
 
-/* js/hero-headline.js: "faster." whooshes away, "more." takes its place and a fleet of
-   small "more" panes fans out around it. The slot keeps the width of "faster.", so nothing
-   moves; without JS or with reduced motion the heading stays "Use fleet. Ship faster." */
-.hero-swap {
+/* js/hero-headline.js acts the headline out on the stage: an aria-hidden copy laid exactly
+   over the heading, which keeps its real text (read by screen readers and crawlers) but
+   stops painting it. Without JS or with reduced motion there is no stage. */
+.hero-copy {
+    position: relative;
+}
+
+.hero h1.is-staged {
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    background-image: none !important;
+}
+
+.hero .hero-stage {
+    position: absolute;
+    margin: 0;
+    pointer-events: none;
+    user-select: none;
+}
+
+.hero .hero-stage.is-probe {
+    visibility: hidden;
+}
+
+/* Words that move or change colour get their own fill: the orb tint's background-clip
+   skips transformed text, and a coloured word should not be tinted. */
+.hs-accent,
+.hs-dim,
+.hs-noise,
+.hs-out,
+.hs-cur {
+    -webkit-text-fill-color: currentColor;
+}
+
+.hs-accent {
+    color: var(--orange);
+    text-shadow: 0 0 32px rgba(255, 158, 100, 0.35);
+}
+
+.hs-dim {
+    color: var(--fg-muted);
+}
+
+.hs-noise {
+    color: var(--cyan);
+    opacity: 0.7;
+}
+
+/* more: "faster." whooshes out, "more." comes in over the same spot. */
+.hs-slot {
     position: relative;
     display: inline-block;
     white-space: nowrap;
 }
 
-.hero-swap-out {
+.hs-out {
     display: inline-block;
-}
-
-/* Moving words get their own fill: the orb tint's background-clip skips transformed text. */
-.hero-swap.is-swapping .hero-swap-out {
     color: #fff;
-    -webkit-text-fill-color: #fff;
-    animation: hero-whoosh-out 0.42s cubic-bezier(0.55, 0, 0.9, 0.3) forwards;
 }
 
-/* "more." is generated content with an empty alternative text, so it stays out of the
-   heading's text for screen readers and crawlers, who keep reading "faster.". */
-.hero-swap.is-swapped::after {
-    content: "more.";
-    content: "more." / "";
+.hs-in {
     position: absolute;
     left: 0;
     top: 0;
-    color: var(--orange);
-    -webkit-text-fill-color: var(--orange);
-    text-shadow: 0 0 32px rgba(255, 158, 100, 0.35);
     opacity: 0;
+}
+
+.hs-slot.is-swapping .hs-out {
+    animation: hero-whoosh-out 0.42s cubic-bezier(0.55, 0, 0.9, 0.3) forwards;
+}
+
+.hs-slot.is-swapped .hs-in {
     animation: hero-whoosh-in 0.5s cubic-bezier(0.2, 0.9, 0.25, 1.15) forwards;
+}
+
+.hs-slot.is-returning .hs-in {
+    animation: hero-fade-out 0.25s ease-in forwards;
+}
+
+.hs-slot.is-returning .hs-out {
+    animation: hero-whoosh-in 0.45s cubic-bezier(0.2, 0.9, 0.25, 1) 0.1s both;
 }
 
 @keyframes hero-whoosh-out {
@@ -475,8 +526,83 @@ code, pre, .mono {
     }
 }
 
-/* The fleet: little terminal panes, each one spawned from a pane before it. They sit
-   behind the copy, in the free space around it. */
+@keyframes hero-fade-out {
+    to { opacity: 0; }
+}
+
+/* it: a vim block cursor (insert mode: a bar), and vim's undo highlight. */
+.hs-cur {
+    border-radius: 0.06em;
+    background: var(--orange);
+    color: var(--bg);
+    animation: hero-cursor-blink 1.1s steps(1, end) infinite;
+}
+
+.hs-bar {
+    display: inline-block;
+    width: 0.08em;
+    height: 0.9em;
+    margin: 0 -0.04em;
+    vertical-align: -0.08em;
+    background: var(--orange);
+    animation: hero-bar-blink 1.1s steps(1, end) infinite;
+}
+
+.hero-stage.is-moving .hs-cur,
+.hero-stage.is-moving .hs-bar {
+    animation: none;
+}
+
+@keyframes hero-cursor-blink {
+    50% {
+        background: transparent;
+        color: #fff;
+    }
+}
+
+@keyframes hero-bar-blink {
+    50% { opacity: 0; }
+}
+
+.hs-undo {
+    border-radius: 0.06em;
+    animation: hero-undo 0.9s ease-out;
+}
+
+@keyframes hero-undo {
+    from { background: rgba(255, 158, 100, 0.35); }
+    to { background: transparent; }
+}
+
+/* reel: the last word spins like a slot machine. Rows are spaced out so only one shows. */
+.hs-reel {
+    display: inline-block;
+    height: 1.05em;
+    vertical-align: top;
+    clip-path: inset(-0.15em -0.5em -0.2em -0.5em);
+    transition: width 0.3s ease;
+}
+
+.hs-reel-track {
+    display: block;
+    transition: transform 0.5s cubic-bezier(0.3, 1.35, 0.5, 1);
+}
+
+.hs-reel-track > span {
+    display: block;
+    height: 1.05em;
+    margin-bottom: 0.35em;
+    white-space: nowrap;
+    color: #fff;
+    -webkit-text-fill-color: currentColor;
+}
+
+.hs-reel-track > .hs-accent {
+    color: var(--orange);
+}
+
+/* The layer behind the copy: little terminal panes, each one spawned from the word or a
+   pane before it, in the free space around the copy. */
 .hero-fleet {
     position: absolute;
     inset: 0;
@@ -502,6 +628,7 @@ code, pre, .mono {
     white-space: nowrap;
     opacity: 0;
     transform: translate(var(--from-x, 0), var(--from-y, 0)) scale(0.2);
+    transition: border-color 0.3s ease, color 0.3s ease;
     animation:
         hero-pane-spawn 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) var(--delay, 0s) forwards,
         hero-pane-bob 4.5s ease-in-out calc(var(--delay, 0s) + 0.65s) infinite alternate;
@@ -516,6 +643,20 @@ code, pre, .mono {
     box-shadow: 0 0 6px var(--dot, var(--green));
 }
 
+.hero-pane--ok,
+.hero-pane.is-done {
+    border-color: rgba(158, 206, 106, 0.45);
+    color: var(--green);
+}
+
+.hero-pane.is-working::before {
+    animation: hero-pane-working 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes hero-pane-working {
+    to { opacity: 0.3; }
+}
+
 @keyframes hero-pane-spawn {
     to {
         opacity: var(--rest-opacity, 0.85);
@@ -523,9 +664,47 @@ code, pre, .mono {
     }
 }
 
+@keyframes hero-pane-recall {
+    from {
+        opacity: var(--rest-opacity, 0.85);
+        transform: none;
+    }
+    to {
+        opacity: 0;
+        transform: translate(var(--from-x, 0), var(--from-y, 0)) scale(0.2);
+    }
+}
+
 @keyframes hero-pane-bob {
     from { translate: 0 0; }
     to { translate: 0 -5px; }
+}
+
+/* sleep: z's drifting up off "sleep.". */
+.hero-z {
+    position: absolute;
+    color: var(--fg-dim);
+    font-family: var(--font-mono);
+    font-size: var(--z-size, 1rem);
+    font-weight: 700;
+    opacity: 0;
+    animation: hero-z-float 2.4s ease-out var(--delay, 0s) infinite;
+}
+
+.hero-z.is-leaving {
+    opacity: 0 !important;
+}
+
+@keyframes hero-z-float {
+    0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0.7);
+    }
+    20% { opacity: 0.85; }
+    100% {
+        opacity: 0;
+        transform: translate(1.4em, -2.6em) scale(1.15);
+    }
 }
 
 .hero .lede {
