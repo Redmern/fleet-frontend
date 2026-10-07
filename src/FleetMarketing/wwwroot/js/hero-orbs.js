@@ -49,6 +49,7 @@
         (CSS.supports("background-clip", "text") || CSS.supports("-webkit-background-clip", "text"));
     if (heading && canClipText) heading.classList.add("orb-tint");
     else heading = null;
+    var stage = null;
 
     // Area of the intersection of two circles with radii a, b whose centres are d apart.
     function lensArea(a, b, d) {
@@ -181,6 +182,9 @@
             });
             layers.push("linear-gradient(#fff, #fff)");
             heading.style.backgroundImage = layers.join(",");
+            // js/hero-headline.js lays its stage exactly over the heading; same paint.
+            stage = stage || hero.querySelector(".hero-stage");
+            if (stage) stage.style.backgroundImage = heading.style.backgroundImage;
         }
 
         frame = requestAnimationFrame(step);

@@ -17,8 +17,10 @@
     var LEADER_KEYS = [
         { key: "t", label: "home", top: true },
         { key: "i", label: "the idea", section: "the-idea" },
+        { key: "s", label: "how fleet ships", section: "ship-it" },
         { key: "h", label: "how it works", section: "how-it-works" },
         { key: "m", label: "multiplexer", section: "multiplexer" },
+        { key: "a", label: "across machines", section: "machines" },
         { key: "f", label: "features", section: "features" },
         { key: "r", label: "requirements", section: "requirements" },
         { key: "n", label: "install", section: "install" },
@@ -41,8 +43,10 @@
 
     var SECTION_LABELS = {
         "the-idea": "the idea",
+        "ship-it": "how fleet ships",
         "how-it-works": "how it works",
         multiplexer: "multiplexer",
+        machines: "across machines",
         features: "features",
         requirements: "requirements",
         install: "install",
