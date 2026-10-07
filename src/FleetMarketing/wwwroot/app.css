@@ -569,9 +569,57 @@ code, pre, .mono {
     background: #1a1b26;
 }
 
+.demo-chapters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.demo-chapters[hidden] {
+    display: none;
+}
+
+.demo-chapter {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-raised);
+    color: var(--fg-dim);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.demo-chapter:hover,
+.demo-chapter:focus-visible {
+    border-color: var(--border-bright);
+    color: var(--fg);
+}
+
+.demo-chapter.active {
+    border-color: var(--cyan);
+    color: var(--fg);
+    background: color-mix(in srgb, var(--cyan) 12%, var(--bg-raised));
+}
+
+.demo-chapter-time {
+    color: var(--fg-muted);
+    font-size: 0.72rem;
+}
+
+.demo-chapter.active .demo-chapter-time {
+    color: var(--cyan);
+}
+
 .demo-note {
     margin-top: 12px;
-    text-align: center;
     color: var(--fg-muted);
     font-size: 0.8rem;
 }
