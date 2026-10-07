@@ -419,6 +419,115 @@ code, pre, .mono {
     color: transparent;
 }
 
+/* js/hero-headline.js: "faster." whooshes away, "more." takes its place and a fleet of
+   small "more" panes fans out around it. The slot keeps the width of "faster.", so nothing
+   moves; without JS or with reduced motion the heading stays "Use fleet. Ship faster." */
+.hero-swap {
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.hero-swap-out {
+    display: inline-block;
+}
+
+/* Moving words get their own fill: the orb tint's background-clip skips transformed text. */
+.hero-swap.is-swapping .hero-swap-out {
+    color: #fff;
+    -webkit-text-fill-color: #fff;
+    animation: hero-whoosh-out 0.42s cubic-bezier(0.55, 0, 0.9, 0.3) forwards;
+}
+
+/* "more." is generated content with an empty alternative text, so it stays out of the
+   heading's text for screen readers and crawlers, who keep reading "faster.". */
+.hero-swap.is-swapped::after {
+    content: "more.";
+    content: "more." / "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--orange);
+    -webkit-text-fill-color: var(--orange);
+    text-shadow: 0 0 32px rgba(255, 158, 100, 0.35);
+    opacity: 0;
+    animation: hero-whoosh-in 0.5s cubic-bezier(0.2, 0.9, 0.25, 1.15) forwards;
+}
+
+@keyframes hero-whoosh-out {
+    to {
+        opacity: 0;
+        transform: translateX(1.6em) skewX(-20deg) scaleX(1.35);
+        filter: blur(6px);
+    }
+}
+
+@keyframes hero-whoosh-in {
+    from {
+        opacity: 0;
+        transform: translateX(-0.4em);
+        filter: blur(4px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+        filter: none;
+    }
+}
+
+/* The fleet: little terminal panes, each one spawned from a pane before it. They sit
+   behind the copy, in the free space around it. */
+.hero-fleet {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.hero-pane {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    padding: 0.25em 0.65em 0.25em 0.55em;
+    border: 1px solid rgba(255, 158, 100, 0.35);
+    border-radius: 6px;
+    background: rgba(31, 35, 53, 0.78);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    color: var(--orange);
+    font-family: var(--font-mono);
+    font-size: var(--pane-size, 1rem);
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translate(var(--from-x, 0), var(--from-y, 0)) scale(0.2);
+    animation:
+        hero-pane-spawn 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) var(--delay, 0s) forwards,
+        hero-pane-bob 4.5s ease-in-out calc(var(--delay, 0s) + 0.65s) infinite alternate;
+}
+
+.hero-pane::before {
+    content: "";
+    width: 0.45em;
+    height: 0.45em;
+    border-radius: 50%;
+    background: var(--dot, var(--green));
+    box-shadow: 0 0 6px var(--dot, var(--green));
+}
+
+@keyframes hero-pane-spawn {
+    to {
+        opacity: var(--rest-opacity, 0.85);
+        transform: none;
+    }
+}
+
+@keyframes hero-pane-bob {
+    from { translate: 0 0; }
+    to { translate: 0 -5px; }
+}
+
 .hero .lede {
     color: var(--fg-dim);
     font-size: 1.3rem;
