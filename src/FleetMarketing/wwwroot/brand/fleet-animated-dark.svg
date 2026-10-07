@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="12 3 90 90" width="512" height="512" role="img" aria-label="Fleet">
+  <style>
+    /* Recolor when inlined: svg { --fleet-ink: #1A1B26; --fleet-accent: #7AA2F7; } */
+    #fleet  { animation: fleet-rock 5s ease-in-out 1.4s infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+    .ship   { transform-box: fill-box; transform-origin: left center; transform: scaleX(0);
+              animation: fleet-sail .7s cubic-bezier(.2,.8,.2,1) forwards; }
+    #ship-1 { animation-delay: .1s; }
+    #ship-2 { animation-delay: .22s; }
+    #ship-3 { animation-delay: .34s; }
+    #ship-4 { animation: fleet-sail .7s cubic-bezier(.2,.8,.2,1) .46s forwards,
+                         fleet-blink 1.1s steps(1, end) 1.5s infinite; }
+
+    @keyframes fleet-sail  { to { transform: scaleX(1); } }
+    @keyframes fleet-blink { 0% { opacity: 1; } 50% { opacity: 0; } }
+    @keyframes fleet-rock  { 0%, 100% { transform: translateY(0) rotate(0); }
+                             50% { transform: translateY(-1.5px) rotate(-1.5deg); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      #fleet, .ship, #ship-4 { animation: none; opacity: 1; transform: none; }
+    }
+  </style>
+  <g id="fleet">
+    <path id="ship-1" class="ship" d="M28,18 L86,18 Q82.5,28 72,28 L28,28 L28,18 Z" style="fill: var(--fleet-ink, #1A1B26)"/>
+    <path id="ship-2" class="ship" d="M28,31 L54,31 Q52.0,38 46,38 L28,38 L28,31 Z" style="fill: var(--fleet-ink, #1A1B26)"/>
+    <path id="ship-3" class="ship" d="M28,41 L68,41 Q65.0,51 56,51 L28,51 L28,41 Z" style="fill: var(--fleet-ink, #1A1B26)"/>
+    <path id="ship-4" class="ship" d="M28,54 L46,54 Q43.75,78 37,78 L28,78 L28,54 Z" style="fill: var(--fleet-accent, #FF9E64)"/>
+  </g>
+</svg>

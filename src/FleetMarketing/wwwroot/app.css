@@ -223,7 +223,6 @@ code, pre, .mono {
 }
 
 .brand .brand-icon {
-    color: var(--green);
     flex-shrink: 0;
 }
 
@@ -364,6 +363,34 @@ code, pre, .mono {
 .hero > .container {
     position: relative;
     z-index: 1;
+}
+
+/* The animated logo: beside the copy on wide screens, above it on narrow ones. */
+.hero-frame {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    gap: 48px;
+}
+
+.hero-logo {
+    flex-shrink: 0;
+    width: clamp(180px, 22vw, 280px);
+    height: auto;
+    filter: drop-shadow(0 0 40px rgba(255, 158, 100, 0.18));
+}
+
+@media (max-width: 900px) {
+    .hero-frame {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 24px;
+    }
+
+    .hero-logo {
+        width: 72px;
+    }
 }
 
 .hero .eyebrow {
@@ -838,6 +865,14 @@ code, pre, .mono {
     flex-wrap: wrap;
 }
 
+.docs-callout-icon {
+    flex-shrink: 0;
+}
+
+.docs-callout-text {
+    flex: 1;
+}
+
 .docs-callout h2 {
     font-size: 1.3rem;
     margin-bottom: 0.3em;
@@ -866,6 +901,18 @@ code, pre, .mono {
 
 .site-footer a {
     color: var(--fg-dim);
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    color: var(--fg);
+    font-weight: 700;
+}
+
+.site-footer a.footer-brand:hover {
+    text-decoration: none;
 }
 
 .footer-links {
