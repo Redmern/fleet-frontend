@@ -223,7 +223,6 @@ code, pre, .mono {
 }
 
 .brand .brand-icon {
-    color: var(--green);
     flex-shrink: 0;
 }
 
@@ -366,12 +365,41 @@ code, pre, .mono {
     z-index: 1;
 }
 
+/* The animated logo: beside the copy on wide screens, above it on narrow ones. */
+.hero-frame {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    gap: 48px;
+}
+
+.hero-logo {
+    flex-shrink: 0;
+    width: clamp(180px, 22vw, 280px);
+    height: auto;
+    filter: drop-shadow(0 0 40px rgba(255, 158, 100, 0.18));
+}
+
+@media (max-width: 900px) {
+    .hero-frame {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 24px;
+    }
+
+    .hero-logo {
+        width: 72px;
+    }
+}
+
 .hero .eyebrow {
     font-size: 0.95rem;
     margin-bottom: 1.6em;
 }
 
-.hero h1 {
+.hero h1,
+.hero .hero-stage {
     font-size: clamp(2.8rem, 6.5vw, 5.2rem);
     font-weight: 800;
     letter-spacing: -0.02em;
@@ -379,17 +407,304 @@ code, pre, .mono {
     margin-bottom: 0.6em;
 }
 
-.hero h1 {
+.hero h1,
+.hero .hero-stage {
     color: #fff;
 }
 
 /* js/hero-orbs.js paints the heading's background with a spot of each orb's colour
    wherever an orb sits behind it (white elsewhere), and clips it to the letters. */
-.hero h1.orb-tint {
+.hero h1.orb-tint,
+.hero .hero-stage.orb-tint {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
+}
+
+/* js/hero-headline.js acts the headline out on the stage: an aria-hidden copy laid exactly
+   over the heading, which keeps its real text (read by screen readers and crawlers) but
+   stops painting it. Without JS or with reduced motion there is no stage. */
+.hero-copy {
+    position: relative;
+}
+
+.hero h1.is-staged {
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    background-image: none !important;
+}
+
+.hero .hero-stage {
+    position: absolute;
+    margin: 0;
+    pointer-events: none;
+    user-select: none;
+}
+
+.hero .hero-stage.is-probe {
+    visibility: hidden;
+}
+
+/* Words that move or change colour get their own fill: the orb tint's background-clip
+   skips transformed text, and a coloured word should not be tinted. */
+.hs-accent,
+.hs-dim,
+.hs-noise,
+.hs-out,
+.hs-cur {
+    -webkit-text-fill-color: currentColor;
+}
+
+.hs-accent {
+    color: var(--orange);
+    text-shadow: 0 0 32px rgba(255, 158, 100, 0.35);
+}
+
+.hs-dim {
+    color: var(--fg-muted);
+}
+
+.hs-noise {
+    color: var(--cyan);
+    opacity: 0.7;
+}
+
+/* more: "faster." whooshes out, "more." comes in over the same spot. */
+.hs-slot {
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.hs-out {
+    display: inline-block;
+    color: #fff;
+}
+
+.hs-in {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}
+
+.hs-slot.is-swapping .hs-out {
+    animation: hero-whoosh-out 0.42s cubic-bezier(0.55, 0, 0.9, 0.3) forwards;
+}
+
+.hs-slot.is-swapped .hs-in {
+    animation: hero-whoosh-in 0.5s cubic-bezier(0.2, 0.9, 0.25, 1.15) forwards;
+}
+
+.hs-slot.is-returning .hs-in {
+    animation: hero-fade-out 0.25s ease-in forwards;
+}
+
+.hs-slot.is-returning .hs-out {
+    animation: hero-whoosh-in 0.45s cubic-bezier(0.2, 0.9, 0.25, 1) 0.1s both;
+}
+
+@keyframes hero-whoosh-out {
+    to {
+        opacity: 0;
+        transform: translateX(1.6em) skewX(-20deg) scaleX(1.35);
+        filter: blur(6px);
+    }
+}
+
+@keyframes hero-whoosh-in {
+    from {
+        opacity: 0;
+        transform: translateX(-0.4em);
+        filter: blur(4px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+        filter: none;
+    }
+}
+
+@keyframes hero-fade-out {
+    to { opacity: 0; }
+}
+
+/* it: a vim block cursor (insert mode: a bar), and vim's undo highlight. */
+.hs-cur {
+    border-radius: 0.06em;
+    background: var(--orange);
+    color: var(--bg);
+    animation: hero-cursor-blink 1.1s steps(1, end) infinite;
+}
+
+.hs-bar {
+    display: inline-block;
+    width: 0.08em;
+    height: 0.9em;
+    margin: 0 -0.04em;
+    vertical-align: -0.08em;
+    background: var(--orange);
+    animation: hero-bar-blink 1.1s steps(1, end) infinite;
+}
+
+.hero-stage.is-moving .hs-cur,
+.hero-stage.is-moving .hs-bar {
+    animation: none;
+}
+
+@keyframes hero-cursor-blink {
+    50% {
+        background: transparent;
+        color: #fff;
+    }
+}
+
+@keyframes hero-bar-blink {
+    50% { opacity: 0; }
+}
+
+.hs-undo {
+    border-radius: 0.06em;
+    animation: hero-undo 0.9s ease-out;
+}
+
+@keyframes hero-undo {
+    from { background: rgba(255, 158, 100, 0.35); }
+    to { background: transparent; }
+}
+
+/* reel: the last word spins like a slot machine. Rows are spaced out so only one shows. */
+.hs-reel {
+    display: inline-block;
+    height: 1.05em;
+    vertical-align: top;
+    clip-path: inset(-0.15em -0.5em -0.2em -0.5em);
+    transition: width 0.3s ease;
+}
+
+.hs-reel-track {
+    display: block;
+    transition: transform 0.5s cubic-bezier(0.3, 1.35, 0.5, 1);
+}
+
+.hs-reel-track > span {
+    display: block;
+    height: 1.05em;
+    margin-bottom: 0.35em;
+    white-space: nowrap;
+    color: #fff;
+    -webkit-text-fill-color: currentColor;
+}
+
+.hs-reel-track > .hs-accent {
+    color: var(--orange);
+}
+
+/* The layer behind the copy: little terminal panes, each one spawned from the word or a
+   pane before it, in the free space around the copy. */
+.hero-fleet {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.hero-pane {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    padding: 0.25em 0.65em 0.25em 0.55em;
+    border: 1px solid rgba(255, 158, 100, 0.35);
+    border-radius: 6px;
+    background: rgba(31, 35, 53, 0.78);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    color: var(--orange);
+    font-family: var(--font-mono);
+    font-size: var(--pane-size, 1rem);
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translate(var(--from-x, 0), var(--from-y, 0)) scale(0.2);
+    transition: border-color 0.3s ease, color 0.3s ease;
+    animation:
+        hero-pane-spawn 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) var(--delay, 0s) forwards,
+        hero-pane-bob 4.5s ease-in-out calc(var(--delay, 0s) + 0.65s) infinite alternate;
+}
+
+.hero-pane::before {
+    content: "";
+    width: 0.45em;
+    height: 0.45em;
+    border-radius: 50%;
+    background: var(--dot, var(--green));
+    box-shadow: 0 0 6px var(--dot, var(--green));
+}
+
+.hero-pane--ok,
+.hero-pane.is-done {
+    border-color: rgba(158, 206, 106, 0.45);
+    color: var(--green);
+}
+
+.hero-pane.is-working::before {
+    animation: hero-pane-working 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes hero-pane-working {
+    to { opacity: 0.3; }
+}
+
+@keyframes hero-pane-spawn {
+    to {
+        opacity: var(--rest-opacity, 0.85);
+        transform: none;
+    }
+}
+
+@keyframes hero-pane-recall {
+    from {
+        opacity: var(--rest-opacity, 0.85);
+        transform: none;
+    }
+    to {
+        opacity: 0;
+        transform: translate(var(--from-x, 0), var(--from-y, 0)) scale(0.2);
+    }
+}
+
+@keyframes hero-pane-bob {
+    from { translate: 0 0; }
+    to { translate: 0 -5px; }
+}
+
+/* sleep: z's drifting up off "sleep.". */
+.hero-z {
+    position: absolute;
+    color: var(--fg-dim);
+    font-family: var(--font-mono);
+    font-size: var(--z-size, 1rem);
+    font-weight: 700;
+    opacity: 0;
+    animation: hero-z-float 2.4s ease-out var(--delay, 0s) infinite;
+}
+
+.hero-z.is-leaving {
+    opacity: 0 !important;
+}
+
+@keyframes hero-z-float {
+    0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0.7);
+    }
+    20% { opacity: 0.85; }
+    100% {
+        opacity: 0;
+        transform: translate(1.4em, -2.6em) scale(1.15);
+    }
 }
 
 .hero .lede {
@@ -542,9 +857,57 @@ code, pre, .mono {
     background: #1a1b26;
 }
 
+.demo-chapters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.demo-chapters[hidden] {
+    display: none;
+}
+
+.demo-chapter {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-raised);
+    color: var(--fg-dim);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.demo-chapter:hover,
+.demo-chapter:focus-visible {
+    border-color: var(--border-bright);
+    color: var(--fg);
+}
+
+.demo-chapter.active {
+    border-color: var(--cyan);
+    color: var(--fg);
+    background: color-mix(in srgb, var(--cyan) 12%, var(--bg-raised));
+}
+
+.demo-chapter-time {
+    color: var(--fg-muted);
+    font-size: 0.72rem;
+}
+
+.demo-chapter.active .demo-chapter-time {
+    color: var(--cyan);
+}
+
 .demo-note {
     margin-top: 12px;
-    text-align: center;
     color: var(--fg-muted);
     font-size: 0.8rem;
 }
@@ -683,6 +1046,13 @@ code, pre, .mono {
         0 0 0 1px color-mix(in srgb, var(--card-accent) 45%, transparent),
         0 0 24px -4px var(--card-accent),
         0 16px 28px -14px color-mix(in srgb, var(--card-accent) 60%, transparent);
+}
+
+/* Four cards: two rows of two instead of three and one. */
+@media (min-width: 901px) {
+    #machines .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 .features-grid .feature-card:nth-child(6n+1) { --card-accent: var(--orange); }
@@ -831,6 +1201,14 @@ code, pre, .mono {
     flex-wrap: wrap;
 }
 
+.docs-callout-icon {
+    flex-shrink: 0;
+}
+
+.docs-callout-text {
+    flex: 1;
+}
+
 .docs-callout h2 {
     font-size: 1.3rem;
     margin-bottom: 0.3em;
@@ -859,6 +1237,18 @@ code, pre, .mono {
 
 .site-footer a {
     color: var(--fg-dim);
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    color: var(--fg);
+    font-weight: 700;
+}
+
+.site-footer a.footer-brand:hover {
+    text-decoration: none;
 }
 
 .footer-links {
@@ -1449,6 +1839,296 @@ body.has-statusline {
 
 @media (prefers-reduced-motion: reduce) {
     .statusline-mode, .keys-help-backdrop, .keys-help, .which-key {
+        transition: none;
+    }
+}
+
+/* "How fleet ships" — a pinned, scroll-driven story (js/ship-it.js).
+   With JS the section is tall and its stage sticks while you scroll through it; with reduced
+   motion (.ship-static) it is one still scene; without JS only the captions show. */
+
+.ship-it {
+    display: block;
+    min-height: 0;
+    padding: 0;
+}
+
+.js .ship-it:not(.ship-static) {
+    height: 760vh;
+}
+
+.ship-stage {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 88px 0 48px;
+}
+
+.js .ship-it:not(.ship-static) .ship-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+}
+
+.ship-head {
+    width: 100%;
+}
+
+.ship-head .kicker {
+    display: inline-block;
+    color: var(--magenta);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+}
+
+.ship-captions {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ship-caption h3 {
+    font-size: clamp(1.4rem, 3.2vw, 2.3rem);
+    line-height: 1.15;
+    margin: 4px 0 8px;
+}
+
+.ship-caption p {
+    color: var(--fg-dim);
+    max-width: 62ch;
+    margin: 0;
+}
+
+.ship-step-num {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--fg-muted);
+    letter-spacing: 0.08em;
+}
+
+/* Live: one caption at a time, cross-fading in place. */
+.ship-live .ship-captions {
+    display: grid;
+}
+
+.ship-live .ship-caption {
+    grid-area: 1 / 1;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+    pointer-events: none;
+}
+
+.ship-live .ship-caption.active {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+}
+
+/* Still and no-JS: every caption, as a list. */
+.ship-static .ship-caption,
+html:not(.js) .ship-caption {
+    margin-bottom: 18px;
+}
+
+.ship-compare {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.ship-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-raised);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--fg);
+}
+
+.ship-chip-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.ship-chip-dot.solo { background: var(--fg-muted); }
+.ship-chip-dot.fleet { background: var(--green); box-shadow: 0 0 8px var(--green); }
+
+.ship-scene {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: min(1200px, 100%);
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+/* While pinned, the scene gets whatever height the captions and rail leave, and the frame
+   hugs the drawing: as wide as fits, by width or by that height, at the drawing's ratio. */
+.ship-live .ship-scene {
+    container-type: size;
+}
+
+.ship-scene svg {
+    display: block;
+    aspect-ratio: 1200 / 640;
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(122, 162, 247, 0.06);
+}
+
+html:not(.js) .ship-scene,
+html:not(.js) .ship-rail,
+.ship-static .ship-rail {
+    display: none;
+}
+
+.ship-live .ship-scene svg {
+    width: min(100cqw, 100cqh * 1200 / 640);
+}
+
+.ship-rail {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 18px;
+}
+
+.ship-rail button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 2px;
+    border: 0;
+    background: none;
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.ship-rail button span {
+    width: 22px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border-bright);
+    transition: background 0.3s ease, width 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ship-rail button:hover,
+.ship-rail button:focus-visible {
+    color: var(--fg);
+}
+
+.ship-rail button.done span {
+    background: var(--blue);
+}
+
+.ship-rail button.active {
+    color: var(--fg);
+}
+
+.ship-rail button.active span {
+    width: 36px;
+    background: var(--cyan);
+    box-shadow: 0 0 10px var(--cyan);
+}
+
+/* SVG text and ambient motion */
+.ship-sign {
+    fill: var(--fg-muted);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-anchor: middle;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.ship-tag-text {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    text-anchor: middle;
+}
+
+.ship-hull-text {
+    fill: #24283b;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 700;
+    text-anchor: middle;
+    letter-spacing: 0.12em;
+}
+
+.ship-prompt-text {
+    fill: #c0caf5;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    white-space: pre;
+}
+
+.ship-box-text.small {
+    font-size: 10px;
+}
+
+.ship-box-text {
+    fill: #13141c;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 700;
+    text-anchor: middle;
+}
+
+.ship-star {
+    animation: ship-twinkle 3.6s ease-in-out infinite;
+}
+
+@keyframes ship-twinkle {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.9; }
+}
+
+@media (max-width: 640px) {
+    .ship-stage {
+        padding: 80px 0 44px;
+    }
+
+    .ship-rail {
+        gap: 4px 12px;
+    }
+
+    .ship-rail button {
+        font-size: 0.7rem;
+    }
+
+    .ship-rail button span {
+        width: 14px;
+    }
+
+    .ship-rail button.active span {
+        width: 22px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ship-star,
+    .ship-live .ship-caption,
+    .ship-rail button span {
+        animation: none;
         transition: none;
     }
 }
