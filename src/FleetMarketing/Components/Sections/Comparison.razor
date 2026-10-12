@@ -3,7 +3,7 @@
         <div class="section-heading reveal">
             <span class="kicker">Compared</span>
             <h2>fleet next to the tools you may know.</h2>
-            <p>Each answer comes from the vendor's own docs or repository, linked below. Where we found nothing, the cell says so; that doesn't mean the feature is missing.</p>
+            <p>Each answer comes from a public source, linked below. Where we found nothing, the cell says so; that doesn't mean the feature is missing.</p>
         </div>
 
         <div class="compare-scroll reveal" tabindex="0" role="region" aria-label="Comparison table, scrolls sideways">
@@ -45,7 +45,7 @@
                 <li><strong>Remote:</strong> Claude Code's is Remote Control from a phone or browser, not ssh; Cursor's and Copilot's agents run in cloud VMs.</li>
                 <li><strong>Voice:</strong> Claude Code's dictation needs a claude.ai login and a local mic, and doesn't work over ssh. fleet's voice mode also needs a claude.ai login.</li>
                 <li><strong>Offline:</strong> fleet's ISO mode is enforced by fleet, not a sandbox; model API traffic still leaves the machine. Vibe Kanban is fully local since its cloud shut down.</li>
-                <li><strong>Open source:</strong> Superset is source-available (ELv2), not OSI open source. Vibe Kanban is community-maintained after its company shut down. Sculptor is a research preview.</li>
+                <li><strong>Open source:</strong> fleet is free and its source is on GitHub; a licence file is still to be added. Superset is source-available (ELv2), not OSI open source. Vibe Kanban is community-maintained after its company shut down. Sculptor is a research preview.</li>
             </ul>
             <ol class="compare-sources">
                 @foreach (var source in Sources)
@@ -89,7 +89,7 @@
 
     private static readonly Row[] Rows =
     [
-        new("fleet", [Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("F")], IsFleet: true),
+        new("fleet", [Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("R")], IsFleet: true),
         new("Claude Code", [Y("S3"), Y("S3"), Y("S2"), Y("S23"), Y("S24"), Nd, Y("S25"), Y("S3"), Nd, Nd]),
         new("Cursor", [Y("S11"), Y("S9"), Nd, Y("S11"), Nd, Nd, Nd, Y("S11"), Nd, Nd]),
         new("Conductor", [Nd, Y("S5c"), N("S5b"), Y("S5a"), Nd, Nd, Nd, Nd, Nd, Nd]),
@@ -106,6 +106,7 @@
     private static readonly Source[] Sources =
     [
         new("F", "fleet-tui README, v0.7.17", "https://github.com/Redmern/fleet-tui/blob/v0.7.17/README.md"),
+        new("R", "fleet-tui source on GitHub", "https://github.com/Redmern/fleet-tui"),
         new("S1", "Stack Overflow Developer Survey 2025: AI", "https://survey.stackoverflow.co/2025/ai"),
         new("S2", "Claude Code overview", "https://code.claude.com/docs/en/overview"),
         new("S3", "Claude Code agent view", "https://code.claude.com/docs/en/agent-view"),
