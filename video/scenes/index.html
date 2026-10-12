@@ -24,6 +24,7 @@
             <span class="kicker" data-in="0.2">01 · Permissioned orchestration</span>
             <h2 data-in="0.4">Claude runs fleet through 32 MCP tools. You decide what each may do.</h2>
             <p data-in="0.9">Every tool is <b class="c-green">allow</b>, <b class="c-yellow">ask</b> or <b class="c-red">forbid</b>, per project. Git gates hold commit and push until you say yes.</p>
+            <p class="fine" data-in="1.4">Enforced by fleet, best-effort: not a sandbox.</p>
         </div>
         <div class="visual">
             <div class="panel perms" data-in="0.6" data-out="5.6">
@@ -53,6 +54,7 @@
             <span class="kicker" data-in="0.2">02 · Ai-DLC</span>
             <h2 data-in="0.4">A staged process with human gates.</h2>
             <p data-in="0.9">Specs, tests, reviews and a PR with evidence, not ad-hoc agent output. You approve at every gate; failures stop and ask.</p>
+            <p class="fine" data-in="1.4">Off by default. The bundled skills are written for .NET repos.</p>
         </div>
         <div class="visual">
             <div class="panel pipeline" data-in="0.5">
@@ -92,7 +94,7 @@
         <div class="caption">
             <span class="kicker" data-in="0.2">04 · Live status</span>
             <h2 data-in="0.4">Know which agent needs you, without watching panes.</h2>
-            <p data-in="0.9">Hooks report every agent's state. A toast and the notification center flag it; approve from there.</p>
+            <p data-in="0.9">Hooks report every agent's state. A toast and the notification center flag it; jump to the agent and approve.</p>
             <ul class="marks" data-in="1.4">
                 <li><span class="c-cyan">?</span> question</li>
                 <li><span class="c-yellow">!</span> permission</li>
@@ -115,7 +117,7 @@
             <h2 data-in="0.4">Close the terminal. Your agents keep working.</h2>
             <p data-in="0.9">fleet ships its own multiplexer. Detach, run <code>fleet attach</code>, and every pane is back. Drive a headless box over ssh the same way.</p>
             <div class="cmds" data-in="8.4">
-                <div><span class="dim">$</span> ssh build-box fleet bridge</div>
+                <div><span class="dim">fleet menu →</span> Remote machines → build-box</div>
                 <div><span class="dim">$</span> fleet attach --ssh build-box</div>
             </div>
         </div>

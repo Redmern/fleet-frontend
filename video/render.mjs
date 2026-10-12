@@ -1,7 +1,7 @@
 // Renders scenes/index.html frame by frame in headless Chromium and pipes the frames to ffmpeg.
 //
 //   node render.mjs               out/fleet-promo.mp4 + out/fleet-promo-poster.jpg
-//   node render.mjs --stills      one PNG per scene (mid-scene) in out/stills/, no video
+//   node render.mjs --stills      one PNG per scene (at 75% of it) in out/stills/, no video
 //   node render.mjs --stills --at=12,45.5   PNGs at those seconds instead
 //   node render.mjs --publish     copy the rendered mp4 + poster into the site's wwwroot/media
 //
@@ -56,9 +56,10 @@ function findChrome() {
 async function openPage() {
     const browser = await chromium.launch({ executablePath: findChrome() });
     const page = await browser.newPage({ viewport: { width: WIDTH, height: HEIGHT }, deviceScaleFactor: 1 });
+    // A script error means wrong frames; stop rather than ship them.
     page.on("pageerror", e => {
         console.error("page error:", e.message);
-        process.exitCode = 1;
+        process.exit(1);
     });
     await page.goto(pathToFileURL(join(here, "scenes", "index.html")).href);
     await page.evaluate(text => window.promo.init(text), readFileSync(castPath, "utf8"));
@@ -93,8 +94,10 @@ const ffmpeg = spawn("ffmpeg", [
     "-v", "error", "-y",
     "-f", "image2pipe", "-framerate", String(FPS), "-c:v", "mjpeg", "-i", "-",
     "-c:v", "libx264", "-preset", "slow", "-crf", "20", "-tune", "animation",
-    // JPEG frames are full range (yuvj420p); browsers and the check expect limited-range yuv420p.
-    "-vf", "scale=in_range=full:out_range=limited,format=yuv420p", "-color_range", "tv",
+    // JPEG frames are full-range BT.601 (yuvj420p); browsers and the check expect limited-range
+    // BT.709 yuv420p, tagged so players do not guess the matrix.
+    "-vf", "scale=in_range=full:out_range=limited:in_color_matrix=bt601:out_color_matrix=bt709,format=yuv420p",
+    "-color_range", "tv", "-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709",
     "-movflags", "+faststart", "-an",
     mp4,
 ], { stdio: ["pipe", "inherit", "inherit"] });
@@ -102,6 +105,7 @@ const ffmpegDone = new Promise((resolve, reject) =>
     ffmpeg.on("close", code => (code === 0 ? resolve() : reject(new Error(`ffmpeg exited ${code}`)))));
 
 const posterScene = info.scenes.find(s => s.id === POSTER_SCENE);
+if (!posterScene) throw new Error(`POSTER_SCENE "${POSTER_SCENE}" is not a scene id`);
 const posterT = posterScene.start + posterScene.dur * 0.75;
 let posterSaved = false;
 const started = Date.now();
