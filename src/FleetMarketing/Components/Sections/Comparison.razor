@@ -11,9 +11,9 @@
                 <thead>
                     <tr>
                         <th scope="col">Tool</th>
-                        @foreach (var column in Columns)
+                        @for (var i = 0; i < Columns.Length; i++)
                         {
-                            <th scope="col" title="@column.Description">@column.Label</th>
+                            <th scope="col" aria-describedby="cmp-col-@i">@Columns[i].Label</th>
                         }
                     </tr>
                 </thead>
@@ -30,7 +30,7 @@
                                 }
                                 else
                                 {
-                                    <td class="cmp-cell @(cell.Verdict == Verdict.Yes ? "cmp-yes" : "cmp-no")" data-verdict="@(cell.Verdict == Verdict.Yes ? "yes" : "no")">@(cell.Verdict == Verdict.Yes ? "Yes" : "No") <a class="cmp-src" href="#src-@cell.Source">@cell.Source</a></td>
+                                    <td class="cmp-cell cmp-@VerdictKey(cell.Verdict)" data-verdict="@VerdictKey(cell.Verdict)">@VerdictText(cell.Verdict) <a class="cmp-src" href="#src-@cell.Source" aria-label="Source: @SourceTitle(cell.Source!)">@cell.Source</a></td>
                                 }
                             }
                         </tr>
@@ -40,12 +40,18 @@
         </div>
 
         <div class="compare-notes reveal">
+            <dl class="compare-legend">
+                @for (var i = 0; i < Columns.Length; i++)
+                {
+                    <div><dt>@Columns[i].Label</dt><dd id="cmp-col-@i">@Columns[i].Description</dd></div>
+                }
+            </dl>
             <p>Correct as of October 2026. Sources retrieved 2026-10-12; fleet's row is from its own README at v0.7.17.</p>
             <ul>
                 <li><strong>Remote:</strong> Claude Code's is Remote Control from a phone or browser, not ssh; Cursor's and Copilot's agents run in cloud VMs.</li>
                 <li><strong>Voice:</strong> Claude Code's dictation needs a claude.ai login and a local mic, and doesn't work over ssh. fleet's voice mode also needs a claude.ai login.</li>
-                <li><strong>Offline:</strong> fleet's ISO mode is enforced by fleet, not a sandbox; model API traffic still leaves the machine. Vibe Kanban is fully local since its cloud shut down.</li>
-                <li><strong>Open source:</strong> fleet is free and its source is on GitHub; a licence file is still to be added. Superset is source-available (ELv2), not OSI open source. Vibe Kanban is community-maintained after its company shut down. Sculptor is a research preview.</li>
+                <li><strong>Offline:</strong> fleet's ISO mode is partly offline: it is enforced by fleet, not a sandbox, and model API traffic still leaves the machine.</li>
+                <li><strong>Open source:</strong> fleet is free and its source is on GitHub; a licence file is still to be added. Superset is source-available (ELv2), not OSI open source. Sculptor is a research preview.</li>
             </ul>
             <ol class="compare-sources">
                 @foreach (var source in Sources)
@@ -58,7 +64,13 @@
 </section>
 
 @code {
-    private enum Verdict { Yes, No, NotDocumented }
+    private enum Verdict { Yes, No, Partly, NotDocumented }
+
+    private static string VerdictKey(Verdict verdict) => verdict.ToString().ToLowerInvariant();
+
+    private static string VerdictText(Verdict verdict) => verdict.ToString();
+
+    private static string SourceTitle(string id) => Sources.Single(s => s.Id == id).Title;
 
     private sealed record Cell(Verdict Verdict, string? Source = null);
 
@@ -70,9 +82,11 @@
 
     private static Cell Y(string source) => new(Verdict.Yes, source);
     private static Cell N(string source) => new(Verdict.No, source);
+    private static Cell P(string source) => new(Verdict.Partly, source);
     private static readonly Cell Nd = new(Verdict.NotDocumented);
 
     // Columns and verdicts follow docs/research/market.md section 2.11 ("nd" = not documented).
+    // Verdicts that rest only on a search snippet or a stretched reading are shown as not documented.
     private static readonly Column[] Columns =
     [
         new("Multi-repo", "Orchestrates agents across several repositories"),
@@ -83,23 +97,23 @@
         new("Gated process", "Staged process with human approval gates"),
         new("Voice", "Voice input"),
         new("Status", "Notifications or live agent status"),
-        new("Offline", "Offline or air-gapped mode"),
+        new("Offline", "Offline or air-gapped mode; Partly = outbound actions blocked but model traffic still leaves"),
         new("Open source", "Source code published under an open-source licence"),
     ];
 
     private static readonly Row[] Rows =
     [
-        new("fleet", [Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("R")], IsFleet: true),
+        new("fleet", [Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), P("F"), Y("R")], IsFleet: true),
         new("Claude Code", [Y("S3"), Y("S3"), Y("S2"), Y("S23"), Y("S24"), Nd, Y("S25"), Y("S3"), Nd, Nd]),
         new("Cursor", [Y("S11"), Y("S9"), Nd, Y("S11"), Nd, Nd, Nd, Y("S11"), Nd, Nd]),
-        new("Conductor", [Nd, Y("S5c"), N("S5b"), Y("S5a"), Nd, Nd, Nd, Nd, Nd, Nd]),
+        new("Conductor", [Nd, Nd, N("S5b"), Y("S5a"), Nd, Nd, Nd, Nd, Nd, Nd]),
         new("Claude Squad", [Nd, Y("S6"), Y("S6"), Nd, Nd, Nd, Nd, Nd, Nd, Y("S6")]),
         new("Nimbalyst", [Nd, Y("S7"), N("S7"), Y("S7"), Nd, Nd, Nd, Nd, Nd, Y("S7")]),
         new("Superset", [Nd, Y("S8"), N("S8"), Y("S8"), Nd, Nd, Nd, Y("S8"), Nd, N("S8")]),
-        new("Vibe Kanban", [Nd, Y("S15"), N("S15c"), Y("S15"), Nd, Nd, Nd, Nd, Y("S15d"), Y("S15")]),
-        new("Sculptor", [Nd, N("S19"), N("S18"), Nd, Nd, Nd, Nd, Nd, Nd, Y("S18")]),
+        new("Vibe Kanban", [Nd, Y("S15"), Nd, Nd, Nd, Nd, Nd, Nd, Nd, Y("S15")]),
+        new("Sculptor", [Nd, Nd, N("S18"), Nd, Nd, Nd, Nd, Nd, Nd, Y("S18")]),
         new("workmux", [Nd, Y("S10"), Y("S10"), Nd, Nd, Nd, Nd, Y("S10"), Nd, Nd]),
-        new("Copilot cloud agent", [N("S17"), Nd, N("S17"), Y("S17"), Y("S17"), Nd, Nd, Nd, Nd, Nd]),
+        new("Copilot cloud agent", [N("S17"), Nd, N("S17"), Y("S17"), Nd, Nd, Nd, Nd, Nd, Nd]),
     ];
 
     // Ids match the source list in docs/research/market.md section 5.
@@ -110,10 +124,8 @@
         new("S1", "Stack Overflow Developer Survey 2025: AI", "https://survey.stackoverflow.co/2025/ai"),
         new("S2", "Claude Code overview", "https://code.claude.com/docs/en/overview"),
         new("S3", "Claude Code agent view", "https://code.claude.com/docs/en/agent-view"),
-        new("S4", "Claude Code agent teams", "https://code.claude.com/docs/en/agent-teams.md"),
         new("S5a", "Conductor pricing", "https://www.conductor.build/pricing"),
         new("S5b", "Conductor", "https://www.conductor.build"),
-        new("S5c", "Conductor: run parallel Claude Codes", "https://www.conductor.build/workflows/run-parallel-claude-codes"),
         new("S6", "Claude Squad", "https://github.com/smtg-ai/claude-squad"),
         new("S7", "Nimbalyst", "https://nimbalyst.com"),
         new("S8", "Superset", "https://superset.sh"),
@@ -121,11 +133,8 @@
         new("S10", "workmux guide", "https://workmux.raine.dev/guide/"),
         new("S11", "Cursor cloud agent", "https://cursor.com/docs/cloud-agent"),
         new("S15", "Vibe Kanban", "https://github.com/BloopAI/vibe-kanban"),
-        new("S15c", "VirtusLab on Vibe Kanban", "https://virtuslab.com/blog/ai/vibe-kanban/"),
-        new("S15d", "Vibe Kanban shutdown", "https://vibekanban.com/blog/shutdown"),
         new("S17", "GitHub Copilot coding agent", "https://docs.github.com/en/copilot/concepts/agents/coding-agent/about-coding-agent"),
         new("S18", "Sculptor", "https://github.com/imbue-ai/sculptor"),
-        new("S19", "Sculptor containers", "https://docs.imbue.com/features/containers"),
         new("S23", "Claude Code Remote Control", "https://code.claude.com/docs/en/remote-control.md"),
         new("S24", "Claude Code permissions", "https://code.claude.com/docs/en/permissions.md"),
         new("S25", "Claude Code voice dictation", "https://code.claude.com/docs/en/voice-dictation.md"),

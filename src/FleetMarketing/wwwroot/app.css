@@ -1254,12 +1254,12 @@ code, pre, .mono {
 
 .cmp-yes { color: var(--green); }
 .cmp-no { color: var(--red); }
-.cmp-nd { color: var(--fg-muted); }
+.cmp-nd { color: var(--fg-dim); }
 
 .cmp-src {
     font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--fg-muted);
+    font-size: 0.75rem;
+    color: var(--fg-dim);
     vertical-align: super;
 }
 
@@ -1277,6 +1277,28 @@ a.cmp-src:hover { color: var(--cyan); }
 }
 
 .compare-notes li { margin: 6px 0; }
+
+.compare-legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 6px 24px;
+    margin: 0 0 16px;
+}
+
+.compare-legend dt {
+    display: inline;
+    color: var(--fg);
+    font-weight: 600;
+}
+
+.compare-legend dt::after { content: ": "; }
+
+.compare-legend dd {
+    display: inline;
+    margin: 0;
+}
+
+.cmp-partly { color: var(--yellow); }
 
 .compare-sources {
     list-style: none;
