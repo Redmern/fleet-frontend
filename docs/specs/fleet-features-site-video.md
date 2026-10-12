@@ -1,4 +1,4 @@
-# Spec — fleet features → market → site → video (DRAFT, awaiting approval)
+# Spec — fleet features → market → site → video (approved)
 
 ## Problem
 fleet-frontend advertises six basic features and underplays most of what fleet-tui 0.7.17 does (MCP permissions and git gates, Ai-DLC, head orchestrator + voice, todo/Jira, stacks, ISO mode, themes, model routing). There is no market positioning and no shareable video (only an asciinema cast). One claim ("Claude Code and friends") overstates the product.
