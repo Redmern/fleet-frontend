@@ -839,6 +839,11 @@ code, pre, .mono {
     margin-top: 8px;
 }
 
+/* A caveat line under a section's cards or columns. */
+.install-note.section-note {
+    margin-top: 28px;
+}
+
 /* Live demo — a real fleet recording played by the vendored asciinema-player */
 
 /* The recording is 120 columns, so this section gets a wider column than the rest. */
@@ -1186,6 +1191,12 @@ code, pre, .mono {
 
 /* Comparison table */
 
+/* Sections are flex columns and .container's auto margins stop it stretching,
+   so without a width it grows to the table's min-width instead of scrolling. */
+#compare > .container {
+    width: 100%;
+}
+
 .compare-scroll {
     overflow-x: auto;
     border: 1px solid var(--border);
@@ -1225,6 +1236,13 @@ code, pre, .mono {
     background: var(--bg-raised);
     color: var(--fg);
     font-weight: 600;
+}
+
+@media (max-width: 640px) {
+    .compare-table tbody th {
+        white-space: normal;
+        min-width: 7.5rem;
+    }
 }
 
 .compare-table tr.compare-fleet th,
