@@ -1,0 +1,54 @@
+<section id="mcp">
+    <div class="container">
+        <div class="section-heading reveal">
+            <span class="kicker">MCP &amp; permissions</span>
+            <h2>Claude drives fleet. You decide what it may do.</h2>
+            <p>Every project registers fleet's MCP server for its main Claude, so "start an agent on repo X" just happens. Each of its 32 tools, and every git commit, push and merge, runs under a per-project policy you set.</p>
+        </div>
+
+        <div class="rule-columns">
+            <div class="rule-col reveal">
+                <span class="rule-kicker">32 MCP tools</span>
+                <p>Agents, repositories, sub-orchestrators, ports and stacks, secrets, todos and the fleet log. Registered per project, no first-run <code>/mcp</code> step.</p>
+            </div>
+            <div class="rule-col reveal">
+                <span class="rule-kicker">Allow · ask · forbid</span>
+                <p>Per project and per tool. Reads are allowed, writes ask. An ask shows an Allow/Deny dialog in the dashboard.</p>
+            </div>
+            <div class="rule-col reveal">
+                <span class="rule-kicker">Git gates</span>
+                <p>Commit, push and merge-PR rules are written into every orchestrator and agent folder. Agents don't push unless you let them.</p>
+            </div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card win-card reveal">
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">permissions.txt</span></div>
+                <div class="win-body">
+                    <h3>A policy per project</h3>
+                    <p>Set each MCP action to allow, ask or forbid. One project can let Claude create agents freely while another asks first.</p>
+                    <div class="feature-visual mono">
+                        <div>list_agents <span class="accent-green">allow</span></div>
+                        <div>new_agent <span class="accent-yellow">ask</span></div>
+                        <div>remove_repository <span class="accent-magenta">forbid</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card win-card reveal">
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">git-gates.txt</span></div>
+                <div class="win-body">
+                    <h3>Gates on commit, push and merge</h3>
+                    <p>The three git gates become Claude permission rules in every worktree fleet creates. Defaults: commit asks, push asks, merge runs.</p>
+                    <div class="feature-visual mono">
+                        <div>git commit <span class="accent-yellow">ask</span></div>
+                        <div>git push <span class="accent-yellow">ask</span></div>
+                        <div>merge PR <span class="accent">auto</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="install-note reveal">Rules are best-effort Claude permission rules, not a sandbox.</p>
+    </div>
+</section>
