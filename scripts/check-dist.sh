@@ -73,15 +73,21 @@ while IFS= read -r cell; do
 done <<< "$cells"
 grep -q 'as of October 2026' "$index" || err "comparison footnote 'as of October 2026' missing"
 
-# Caveats that must stay visible.
-grep -q 'not a sandbox' "$index" || err "'not a sandbox' caveat missing"
-grep -qi 'Jira[^<]*experimental\|experimental[^<]*Jira' "$index" || err "Jira 'experimental' caveat missing"
-grep -q 'claude.ai login' "$index" || err "voice 'claude.ai login' caveat missing"
-grep -qi 'roadmap' "$index" || err "weaknesses note does not point to the roadmap"
+# Caveats that must stay visible, each in its own section.
+section() { perl -0ne 'print $1 if /(<section id="'"$1"'".*?<\/section>)/s' "$index"; }
+has() { section "$1" | grep -qi -- "$2" || err "section #$1 lacks caveat '$2'"; }
+has mcp 'not a sandbox'
+has features 'Enforced by fleet, not a sandbox'
+has features 'Jira pull is experimental'
+has orchestrators 'claude.ai login'
+has ai-dlc '.NET repos'
+has weaker 'not yet used in anger'
+section weaker | grep -qi 'roadmap' || err "weaknesses note does not point to the roadmap"
 
 # CLI commands fleet does not have.
 grep -q 'fleet dispatch' "$index" && err "'fleet dispatch' is not a fleet CLI command"
 grep -q 'fleet <span class="accent-magenta">repo add' "$index" && err "'fleet repo add' is not a fleet CLI command"
+grep -q 'Finish workflow' "$index" && err "'Finish workflow' card has no source in features.md"
 
 # Promo video: rendered only when the file exists.
 if [[ -f "$dist/media/fleet-promo.mp4" ]]; then
