@@ -21,7 +21,7 @@ err() { echo "FAIL: $*" >&2; fail=1; }
 [[ -f "$index" ]] || { echo "FAIL: $index not found" >&2; exit 1; }
 
 # Sections the page must contain.
-required_ids=(install mcp)
+required_ids=(install mcp orchestrators ai-dlc features positioning compare weaker)
 for id in "${required_ids[@]}"; do
     grep -q "id=\"$id\"" "$index" || err "missing section id=\"$id\""
 done
@@ -58,6 +58,30 @@ done < <(find "$dist" -name '*.css' -not -path '*/vendor/*')
 grep -q 'Main-ochestrator' "$index" && err "typo 'Main-ochestrator' is back"
 grep -qi 'and friends' "$index" && err "harness overclaim 'and friends' is back"
 grep -qi 'free and open source' "$index" || err "'free and open source' statement missing"
+
+# Comparison table: every cell is yes/no with a source, or "Not documented".
+cells=$(grep -o -P '<td class="cmp-cell[^"]*"[^>]*>.*?</td>' "$index" || true)
+[[ -n "$cells" ]] || err "comparison table has no cells"
+while IFS= read -r cell; do
+    [[ -z "$cell" ]] && continue
+    verdict=$(sed -E 's/.*data-verdict="([a-z]*)".*/\1/' <<< "$cell")
+    case "$verdict" in
+        yes|no) [[ "$cell" == *'href="#src-'* ]] || err "comparison cell without source: $cell" ;;
+        nd) [[ "$cell" == *'Not documented'* ]] || err "nd cell must read 'Not documented': $cell" ;;
+        *) err "comparison cell with unknown verdict: $cell" ;;
+    esac
+done <<< "$cells"
+grep -q 'as of October 2026' "$index" || err "comparison footnote 'as of October 2026' missing"
+
+# Caveats that must stay visible.
+grep -q 'not a sandbox' "$index" || err "'not a sandbox' caveat missing"
+grep -qi 'Jira[^<]*experimental\|experimental[^<]*Jira' "$index" || err "Jira 'experimental' caveat missing"
+grep -q 'claude.ai login' "$index" || err "voice 'claude.ai login' caveat missing"
+grep -qi 'roadmap' "$index" || err "weaknesses note does not point to the roadmap"
+
+# CLI commands fleet does not have.
+grep -q 'fleet dispatch' "$index" && err "'fleet dispatch' is not a fleet CLI command"
+grep -q 'fleet <span class="accent-magenta">repo add' "$index" && err "'fleet repo add' is not a fleet CLI command"
 
 # Promo video: rendered only when the file exists.
 if [[ -f "$dist/media/fleet-promo.mp4" ]]; then
