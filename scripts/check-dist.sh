@@ -27,7 +27,7 @@ for id in "${required_ids[@]}"; do
 done
 
 # Internal references in the HTML.
-refs=$(grep -o -E '[[:space:]](href|src|poster|data-cast)="[^"]*"' "$index" | sed -E 's/^[[:space:]][a-z-]+="(.*)"$/\1/' | sort -u)
+refs=$(grep -o -E '[[:space:]](href|src|poster|data-cast)="[^"]*"' "$index" | sed -E 's/^[[:space:]][a-z-]+="(.*)"$/\1/' | sort -u || true)
 while IFS= read -r ref; do
     [[ -z "$ref" ]] && continue
     case "$ref" in
@@ -62,7 +62,7 @@ grep -qi 'free and open source' "$index" || err "'free and open source' statemen
 # Promo video: rendered only when the file exists.
 if [[ -f "$dist/media/fleet-promo.mp4" ]]; then
     grep -q 'id="showcase"' "$index" || err "media/fleet-promo.mp4 exported but section id=\"showcase\" missing"
-    video=$(grep -o -E '<video[^>]*>' "$index" | head -n1)
+    video=$(grep -o -E '<video[^>]*>' "$index" | head -n1 || true)
     [[ -n "$video" ]] || err "no <video> element"
     [[ "$video" == *controls* ]] || err "<video> lacks controls"
     [[ "$video" == *poster=* ]] || err "<video> lacks poster"
