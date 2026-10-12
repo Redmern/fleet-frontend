@@ -72,6 +72,10 @@ while IFS= read -r cell; do
 done <<< "$cells"
 grep -qF 'as of October 2026' "$index" || err "comparison footnote 'as of October 2026' missing"
 
+# fleet's ISO mode is not a sandbox: its Offline cell stays "Partly".
+fleet_row=$(grep -o -P '<tr class="compare-fleet">.*?</tr>' <<< "$(tr -d '\n' < "$index")" || true)
+[[ $(grep -o 'data-verdict="partly"' <<< "$fleet_row" | wc -l) -eq 1 ]] || err "fleet's Offline cell must be 'Partly'"
+
 # Every listed source is cited, and every source link has an accessible name.
 for id in $(grep -o -E '<li id="src-[A-Za-z0-9]+"' "$index" | sed -E 's/.*src-//; s/"//'); do
     grep -qF "href=\"#src-$id\"" "$index" || err "source $id is listed but never cited"
