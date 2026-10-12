@@ -1,3 +1,5 @@
+@inject IConfiguration Configuration
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,13 +15,13 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="fleet — run multiple AI coding agents from your terminal" />
     <meta property="og:description" content="Terminal-native orchestration for Claude Code agents. Native binaries for Windows and Linux; build from source on macOS. Pick a project, get a dashboard, dispatch sub-orchestrators, review and merge — all from one terminal." />
-    <meta property="og:image" content="https://redmern.github.io/fleet-frontend/og-image.svg" />
-    <meta property="og:url" content="https://redmern.github.io/fleet-frontend/" />
+    <meta property="og:image" content="@(SiteUrl)og-image.svg" />
+    <meta property="og:url" content="@SiteUrl" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="fleet — run multiple AI coding agents from your terminal" />
     <meta name="twitter:description" content="Terminal-native orchestration for Claude Code agents. Windows and Linux binaries; macOS from source." />
-    <meta name="twitter:image" content="https://redmern.github.io/fleet-frontend/og-image.svg" />
+    <meta name="twitter:image" content="@(SiteUrl)og-image.svg" />
 
     <link rel="icon" href="favicon.ico" sizes="any" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
@@ -44,3 +46,9 @@
 </body>
 
 </html>
+
+@code {
+    // Absolute URL the site is published at (canonical, og:image). Override at export
+    // time with the SiteUrl environment variable, e.g. SiteUrl=https://fleet-tui.dev/.
+    private string SiteUrl => Configuration["SiteUrl"] is { Length: > 0 } url ? url : "https://redmern.github.io/fleet-frontend/";
+}
