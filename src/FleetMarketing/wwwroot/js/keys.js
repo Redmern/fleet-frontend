@@ -1,5 +1,5 @@
 // Vim-style page navigation — the site's own j/k/g/G + leader-chord keybinds,
-// borrowed straight from fleet's TUI (see the "Rebindable keys" feature card)
+// borrowed straight from fleet's TUI (see the keybind note under Features)
 // — plus a persistent statusline that makes it visible, not just a hidden
 // interaction. Entirely JS-driven progressive enhancement: nothing on the
 // page depends on this to be readable or usable, it's a bonus.
