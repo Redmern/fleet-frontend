@@ -55,43 +55,48 @@ while IFS= read -r css; do
 done < <(find "$dist" -name '*.css' -not -path '*/vendor/*')
 
 # Copy regressions.
-grep -q 'Main-ochestrator' "$index" && err "typo 'Main-ochestrator' is back"
-grep -qi 'and friends' "$index" && err "harness overclaim 'and friends' is back"
-grep -qi 'free and open source' "$index" || err "'free and open source' statement missing"
+grep -qF 'Main-ochestrator' "$index" && err "typo 'Main-ochestrator' is back"
+grep -qiF 'and friends' "$index" && err "harness overclaim 'and friends' is back"
 
-# Comparison table: every cell is yes/no with a source, or "Not documented".
+# Comparison table: every cell is yes/no/partly with a source, or "Not documented".
 cells=$(grep -o -P '<td class="cmp-cell[^"]*"[^>]*>.*?</td>' "$index" || true)
 [[ -n "$cells" ]] || err "comparison table has no cells"
 while IFS= read -r cell; do
     [[ -z "$cell" ]] && continue
     verdict=$(sed -E 's/.*data-verdict="([a-z]*)".*/\1/' <<< "$cell")
     case "$verdict" in
-        yes|no) [[ "$cell" == *'href="#src-'* ]] || err "comparison cell without source: $cell" ;;
+        yes|no|partly) [[ "$cell" == *'href="#src-'* ]] || err "comparison cell without source: $cell" ;;
         nd) [[ "$cell" == *'Not documented'* ]] || err "nd cell must read 'Not documented': $cell" ;;
         *) err "comparison cell with unknown verdict: $cell" ;;
     esac
 done <<< "$cells"
-grep -q 'as of October 2026' "$index" || err "comparison footnote 'as of October 2026' missing"
+grep -qF 'as of October 2026' "$index" || err "comparison footnote 'as of October 2026' missing"
+
+# Every listed source is cited, and every source link has an accessible name.
+for id in $(grep -o -E '<li id="src-[A-Za-z0-9]+"' "$index" | sed -E 's/.*src-//; s/"//'); do
+    grep -qF "href=\"#src-$id\"" "$index" || err "source $id is listed but never cited"
+done
+unnamed=$(grep -o -E '<a class="cmp-src"[^>]*>' "$index" | grep -vF 'aria-label="Source: ' || true)
+[[ -z "$unnamed" ]] || err "source links without aria-label: $(head -n1 <<< "$unnamed")"
 
 # Caveats that must stay visible, each in its own section.
 section() { perl -0ne 'print $1 if /(<section id="'"$1"'".*?<\/section>)/s' "$index"; }
-has() { section "$1" | grep -qi -- "$2" || err "section #$1 lacks caveat '$2'"; }
+has() { section "$1" | grep -qiF -- "$2" || err "section #$1 lacks caveat '$2'"; }
 has mcp 'not a sandbox'
 has features 'Enforced by fleet, not a sandbox'
 has features 'Jira pull is experimental'
 has orchestrators 'claude.ai login'
 has ai-dlc '.NET repos'
 has weaker 'not yet used in anger'
-section weaker | grep -qi 'roadmap' || err "weaknesses note does not point to the roadmap"
+section weaker | grep -qiF 'roadmap' || err "weaknesses note does not point to the roadmap"
 
 # CLI commands fleet does not have.
-grep -q 'fleet dispatch' "$index" && err "'fleet dispatch' is not a fleet CLI command"
-grep -q 'fleet <span class="accent-magenta">repo add' "$index" && err "'fleet repo add' is not a fleet CLI command"
-grep -q 'Finish workflow' "$index" && err "'Finish workflow' card has no source in features.md"
+grep -qF 'fleet <span class="accent-magenta">repo add' "$index" && err "'fleet repo add' is not a fleet CLI command"
+grep -qF 'Finish workflow' "$index" && err "'Finish workflow' card has no source in features.md"
 
 # Promo video: rendered only when the file exists.
 if [[ -f "$dist/media/fleet-promo.mp4" ]]; then
-    grep -q 'id="showcase"' "$index" || err "media/fleet-promo.mp4 exported but section id=\"showcase\" missing"
+    grep -qF 'id="showcase"' "$index" || err "media/fleet-promo.mp4 exported but section id=\"showcase\" missing"
     video=$(grep -o -E '<video[^>]*>' "$index" | head -n1 || true)
     [[ -n "$video" ]] || err "no <video> element"
     [[ "$video" == *controls* ]] || err "<video> lacks controls"
@@ -99,7 +104,7 @@ if [[ -f "$dist/media/fleet-promo.mp4" ]]; then
     [[ "$video" == *'preload="metadata"'* ]] || err "<video> lacks preload=\"metadata\""
     [[ "$video" == *autoplay* ]] && err "<video> must not autoplay"
 else
-    grep -q '<video' "$index" && err "<video> rendered but media/fleet-promo.mp4 is absent"
+    grep -qF '<video' "$index" && err "<video> rendered but media/fleet-promo.mp4 is absent"
 fi
 
 if [[ $fail -ne 0 ]]; then
