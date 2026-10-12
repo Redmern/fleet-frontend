@@ -1,5 +1,5 @@
 // Vim-style page navigation — the site's own j/k/g/G + leader-chord keybinds,
-// borrowed straight from fleet's TUI (see the "Rebindable keys" feature card)
+// borrowed straight from fleet's TUI (see the keybind note under Features)
 // — plus a persistent statusline that makes it visible, not just a hidden
 // interaction. Entirely JS-driven progressive enhancement: nothing on the
 // page depends on this to be readable or usable, it's a bonus.
@@ -19,9 +19,13 @@
         { key: "i", label: "the idea", section: "the-idea" },
         { key: "s", label: "how fleet ships", section: "ship-it" },
         { key: "h", label: "how it works", section: "how-it-works" },
+        { key: "p", label: "MCP & permissions", section: "mcp" },
+        { key: "o", label: "orchestrators", section: "orchestrators" },
+        { key: "l", label: "Ai-DLC", section: "ai-dlc" },
         { key: "m", label: "multiplexer", section: "multiplexer" },
         { key: "a", label: "across machines", section: "machines" },
         { key: "f", label: "features", section: "features" },
+        { key: "c", label: "compared", section: "compare" },
         { key: "r", label: "requirements", section: "requirements" },
         { key: "n", label: "install", section: "install" },
         { key: "d", label: "docs", section: "docs" },
@@ -45,9 +49,17 @@
         "the-idea": "the idea",
         "ship-it": "how fleet ships",
         "how-it-works": "how it works",
+        demo: "demo",
+        mcp: "MCP & permissions",
+        showcase: "video",
+        orchestrators: "orchestrators",
+        "ai-dlc": "Ai-DLC",
         multiplexer: "multiplexer",
         machines: "across machines",
         features: "features",
+        positioning: "why fleet",
+        compare: "compared",
+        weaker: "where fleet is weaker",
         requirements: "requirements",
         install: "install",
         docs: "docs"

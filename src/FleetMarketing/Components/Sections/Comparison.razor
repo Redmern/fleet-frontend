@@ -1,0 +1,142 @@
+<section id="compare">
+    <div class="container">
+        <div class="section-heading reveal">
+            <span class="kicker">Compared</span>
+            <h2>fleet next to the tools you may know.</h2>
+            <p>Each answer comes from a public source, linked below. Where we found nothing, the cell says so; that doesn't mean the feature is missing.</p>
+        </div>
+
+        <div class="compare-scroll reveal" tabindex="0" role="region" aria-label="Comparison table, scrolls sideways">
+            <table class="compare-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Tool</th>
+                        @for (var i = 0; i < Columns.Length; i++)
+                        {
+                            <th scope="col" aria-describedby="cmp-col-@i">@Columns[i].Label</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Rows)
+                    {
+                        <tr class="@(row.IsFleet ? "compare-fleet" : null)">
+                            <th scope="row">@row.Tool</th>
+                            @foreach (var cell in row.Cells)
+                            {
+                                @if (cell.Verdict == Verdict.NotDocumented)
+                                {
+                                    <td class="cmp-cell cmp-nd" data-verdict="nd">Not documented</td>
+                                }
+                                else
+                                {
+                                    <td class="cmp-cell cmp-@VerdictKey(cell.Verdict)" data-verdict="@VerdictKey(cell.Verdict)">@VerdictText(cell.Verdict) <a class="cmp-src" href="#src-@cell.Source" aria-label="Source: @SourceTitle(cell.Source!)">@cell.Source</a></td>
+                                }
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="compare-notes reveal">
+            <dl class="compare-legend">
+                @for (var i = 0; i < Columns.Length; i++)
+                {
+                    <div><dt>@Columns[i].Label</dt><dd id="cmp-col-@i">@Columns[i].Description</dd></div>
+                }
+            </dl>
+            <p>Correct as of October 2026. Sources retrieved 2026-10-12; fleet's row is from its own README at v0.7.17.</p>
+            <ul>
+                <li><strong>Remote:</strong> Claude Code's is Remote Control from a phone or browser, not ssh; Cursor's and Copilot's agents run in cloud VMs.</li>
+                <li><strong>Voice:</strong> Claude Code's dictation needs a claude.ai login and a local mic, and doesn't work over ssh. fleet's voice mode also needs a claude.ai login.</li>
+                <li><strong>Offline:</strong> fleet's ISO mode is partly offline: it is enforced by fleet, not a sandbox, and model API traffic still leaves the machine.</li>
+                <li><strong>Open source:</strong> fleet is free and its source is on GitHub; a licence file is still to be added. Superset is source-available (ELv2), not OSI open source. Sculptor is a research preview.</li>
+            </ul>
+            <ol class="compare-sources">
+                @foreach (var source in Sources)
+                {
+                    <li id="src-@source.Id"><span class="cmp-src">@source.Id</span> <a href="@source.Url">@source.Title</a></li>
+                }
+            </ol>
+        </div>
+    </div>
+</section>
+
+@code {
+    private enum Verdict { Yes, No, Partly, NotDocumented }
+
+    private static string VerdictKey(Verdict verdict) => verdict.ToString().ToLowerInvariant();
+
+    private static string VerdictText(Verdict verdict) => verdict.ToString();
+
+    private static string SourceTitle(string id) => Sources.Single(s => s.Id == id).Title;
+
+    private sealed record Cell(Verdict Verdict, string? Source = null);
+
+    private sealed record Row(string Tool, Cell[] Cells, bool IsFleet = false);
+
+    private sealed record Column(string Label, string Description);
+
+    private sealed record Source(string Id, string Title, string Url);
+
+    private static Cell Y(string source) => new(Verdict.Yes, source);
+    private static Cell N(string source) => new(Verdict.No, source);
+    private static Cell P(string source) => new(Verdict.Partly, source);
+    private static readonly Cell Nd = new(Verdict.NotDocumented);
+
+    // Columns and verdicts follow docs/research/market.md section 2.11 ("nd" = not documented).
+    // Verdicts that rest only on a search snippet or a stretched reading are shown as not documented.
+    private static readonly Column[] Columns =
+    [
+        new("Multi-repo", "Orchestrates agents across several repositories"),
+        new("Worktrees", "Git worktree isolation per agent"),
+        new("Terminal-native", "Runs in the terminal, not a desktop or web app"),
+        new("Remote", "Work on a remote machine, phone or cloud"),
+        new("Permission gates", "Approval rules for agent actions"),
+        new("Gated process", "Staged process with human approval gates"),
+        new("Voice", "Voice input"),
+        new("Status", "Notifications or live agent status"),
+        new("Offline", "Offline or air-gapped mode; Partly = outbound actions blocked but model traffic still leaves"),
+        new("Open source", "Source code published under an open-source licence"),
+    ];
+
+    private static readonly Row[] Rows =
+    [
+        new("fleet", [Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), Y("F"), P("F"), Y("R")], IsFleet: true),
+        new("Claude Code", [Y("S3"), Y("S3"), Y("S2"), Y("S23"), Y("S24"), Nd, Y("S25"), Y("S3"), Nd, Nd]),
+        new("Cursor", [Y("S11"), Y("S9"), Nd, Y("S11"), Nd, Nd, Nd, Y("S11"), Nd, Nd]),
+        new("Conductor", [Nd, Nd, N("S5b"), Y("S5a"), Nd, Nd, Nd, Nd, Nd, Nd]),
+        new("Claude Squad", [Nd, Y("S6"), Y("S6"), Nd, Nd, Nd, Nd, Nd, Nd, Y("S6")]),
+        new("Nimbalyst", [Nd, Y("S7"), N("S7"), Y("S7"), Nd, Nd, Nd, Nd, Nd, Y("S7")]),
+        new("Superset", [Nd, Y("S8"), N("S8"), Y("S8"), Nd, Nd, Nd, Y("S8"), Nd, N("S8")]),
+        new("Vibe Kanban", [Nd, Y("S15"), Nd, Nd, Nd, Nd, Nd, Nd, Nd, Y("S15")]),
+        new("Sculptor", [Nd, Nd, N("S18"), Nd, Nd, Nd, Nd, Nd, Nd, Y("S18")]),
+        new("workmux", [Nd, Y("S10"), Y("S10"), Nd, Nd, Nd, Nd, Y("S10"), Nd, Nd]),
+        new("Copilot cloud agent", [N("S17"), Nd, N("S17"), Y("S17"), Nd, Nd, Nd, Nd, Nd, Nd]),
+    ];
+
+    // Ids match the source list in docs/research/market.md section 5.
+    private static readonly Source[] Sources =
+    [
+        new("F", "fleet-tui README, v0.7.17", "https://github.com/Redmern/fleet-tui/blob/v0.7.17/README.md"),
+        new("R", "fleet-tui source on GitHub", "https://github.com/Redmern/fleet-tui"),
+        new("S1", "Stack Overflow Developer Survey 2025: AI", "https://survey.stackoverflow.co/2025/ai"),
+        new("S2", "Claude Code overview", "https://code.claude.com/docs/en/overview"),
+        new("S3", "Claude Code agent view", "https://code.claude.com/docs/en/agent-view"),
+        new("S5a", "Conductor pricing", "https://www.conductor.build/pricing"),
+        new("S5b", "Conductor", "https://www.conductor.build"),
+        new("S6", "Claude Squad", "https://github.com/smtg-ai/claude-squad"),
+        new("S7", "Nimbalyst", "https://nimbalyst.com"),
+        new("S8", "Superset", "https://superset.sh"),
+        new("S9", "Cursor worktrees", "https://cursor.com/docs/configuration/worktrees"),
+        new("S10", "workmux guide", "https://workmux.raine.dev/guide/"),
+        new("S11", "Cursor cloud agent", "https://cursor.com/docs/cloud-agent"),
+        new("S15", "Vibe Kanban", "https://github.com/BloopAI/vibe-kanban"),
+        new("S17", "GitHub Copilot coding agent", "https://docs.github.com/en/copilot/concepts/agents/coding-agent/about-coding-agent"),
+        new("S18", "Sculptor", "https://github.com/imbue-ai/sculptor"),
+        new("S23", "Claude Code Remote Control", "https://code.claude.com/docs/en/remote-control.md"),
+        new("S24", "Claude Code permissions", "https://code.claude.com/docs/en/permissions.md"),
+        new("S25", "Claude Code voice dictation", "https://code.claude.com/docs/en/voice-dictation.md"),
+    ];
+}

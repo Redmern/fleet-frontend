@@ -7,14 +7,17 @@
 
         <div class="features-grid">
             <div class="feature-card win-card reveal">
-                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">dispatch.sh</span></div>
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">agents.txt</span></div>
                 <div class="win-body">
-                    <h3><span class="status-dot working"></span>Multi-agent dispatch</h3>
-                    <p>Fan work out across agents in hidden panes.</p>
-                    <div class="feature-visual mono">$ fleet dispatch <span class="accent">"add pagination"</span> --project api</div>
+                    <h3><span class="status-dot working"></span>An agent per worktree</h3>
+                    <p>Each agent runs in its own git worktree on one repo and branch, so parallel work never collides. Start them from the dashboard or let Claude do it. Harness: Claude Code, or Neovim with Claude beside it.</p>
+                    <div class="feature-visual mono">
+                        <div>api · feat/pagination <span class="accent">claude</span></div>
+                        <div>web · feat/pagination <span class="accent-magenta">nvim</span></div>
+                        <div>remove <span class="accent">worktree optional · branch always kept</span></div>
+                    </div>
                 </div>
             </div>
-
             <div class="feature-card win-card reveal">
                 <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">notices.log</span></div>
                 <div class="win-body">
@@ -29,47 +32,84 @@
             </div>
 
             <div class="feature-card win-card reveal">
-                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">finish.sh</span></div>
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">dashboard.txt</span></div>
                 <div class="win-body">
-                    <h3>Finish workflow</h3>
-                    <p>Merge, push, and clean up — from a menu.</p>
+                    <h3>One dashboard per project</h3>
+                    <p>Four tabs: Agents, Subs, Repositories and Notifications. See every agent's branch, harness and live status, and hide, stop or remove it from one place.</p>
                     <div class="feature-visual mono">
-                        <div>&gt; Finish agent-2</div>
-                        <div class="accent">  merge → push → cleanup</div>
+                        <div><span class="accent">Agents</span> · Subs · Repositories · Notifications</div>
+                        <div>api · feat/pagination <span class="accent-green">✓ done</span></div>
                     </div>
                 </div>
             </div>
-
             <div class="feature-card win-card reveal">
-                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">repos.toml</span></div>
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">repos.txt</span></div>
                 <div class="win-body">
                     <h3>Repository management</h3>
-                    <p>Add, remove, and pull repos from the dashboard.</p>
-                    <div class="feature-visual mono">$ fleet <span class="accent-magenta">repo add</span> ~/code/api</div>
-                </div>
-            </div>
-
-            <div class="feature-card win-card reveal">
-                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">keys.toml</span></div>
-                <div class="win-body">
-                    <h3>Rebindable keys</h3>
-                    <p>Vim-style navigation, leader-chord prefix, fully rebindable.</p>
+                    <p>A project is a folder of repos. Add one (create or clone), pull, or change its default branch from the Repositories tab. Pulls never create merge commits.</p>
                     <div class="feature-visual mono">
-                        <div>j/k <span class="accent">move</span> · g/G <span class="accent">top/bottom</span></div>
-                        <div>&lt;leader&gt;f <span class="accent">finish agent</span></div>
+                        <div>Repositories <span class="accent">tab</span></div>
+                        <div>pull <span class="accent">fetch --prune · merge --ff-only</span></div>
                     </div>
                 </div>
             </div>
-
             <div class="feature-card win-card reveal">
-                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">update.log</span></div>
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">iso.txt</span></div>
                 <div class="win-body">
-                    <h3>Self-update</h3>
-                    <p><code>fleet update</code> checks GitHub releases, swaps itself in place. <code>fleet update &lt;v&gt;</code> installs a specific one.</p>
-                    <div class="feature-visual mono">$ fleet update
-<span class="accent-green">✓ checksum verified — updated</span></div>
+                    <h3>ISO mode</h3>
+                    <p>For a machine whose data must not leave it. Others see only codes and states, there is no outbound ssh, update check or port forward, and agents are denied <code>git push</code> and PR create or merge. Enforced by fleet, not a sandbox: model API traffic still leaves.</p>
+                    <div class="feature-visual mono">
+                        <div>sub1.agent2: <span class="accent-yellow">waiting for input</span></div>
+                        <div>git push <span class="accent-magenta">denied</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="feature-card win-card reveal">
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">models.txt</span></div>
+                <div class="win-body">
+                    <h3>Auto model routing</h3>
+                    <p>Set model and effort per role: head, main, sub, repo agent. Or set <code>auto</code> and Haiku picks the model and effort for each new sub or agent, falling back to your default if it times out.</p>
+                    <div class="feature-visual mono">
+                        <div>head · main · sub · agent <span class="accent">model + effort</span></div>
+                        <div>auto <span class="accent">Haiku picks per new sub or agent</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="feature-card win-card reveal">
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">todo.txt</span></div>
+                <div class="win-body">
+                    <h3>Todo board</h3>
+                    <p>Type <code>+idea</code> in the main pane, run <code>fleet todo "idea"</code>, or let Claude file one. The board shows effort and status and launches a ticket as a sub-orchestrator. Jira pull is experimental: Jira Cloud only, read-only, not yet tested against a real Jira instance.</p>
+                    <div class="feature-visual mono">
+                        <div>&gt; <span class="accent-magenta">+cache the product list</span></div>
+                        <div>t <span class="accent">board</span> · enter <span class="accent">open in nvim</span> · l <span class="accent">launch as sub</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="feature-card win-card reveal">
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">stacks.txt</span></div>
+                <div class="win-body">
+                    <h3>Ports, stacks and secrets</h3>
+                    <p>Start a project's dev stack on a remote, wait for its port and health check, and get it forwarded to your browser. Untracked files such as <code>.env</code> are copied into every new worktree; fleet never reads them.</p>
+                    <div class="feature-visual mono">
+                        <div>start_stack <span class="accent">run · wait for port · forward</span></div>
+                        <div>localhost:5173 <span class="accent-green">← remote</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="feature-card win-card reveal">
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">theme.txt</span></div>
+                <div class="win-body">
+                    <h3>15 themes, one look</h3>
+                    <p><code>fleet theme set</code> restyles fleet, its Neovim, Claude Code and yazi live. On Omarchy, fleet follows every theme switch.</p>
+                    <div class="feature-visual mono">
+                        <div>$ fleet theme set <span class="accent-magenta">catppuccin-mocha</span></div>
+                        <div>$ fleet theme install <span class="accent">omarchy</span></div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <p class="install-note section-note reveal">Also included: one keybind model for fleet, its Neovim and Claude Code, with an in-app editor; <code>fleet update</code> with checksum verification; <code>fleet doctor</code>.</p>
     </div>
 </section>

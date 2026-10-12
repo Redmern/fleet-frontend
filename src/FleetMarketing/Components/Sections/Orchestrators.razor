@@ -1,0 +1,53 @@
+<section id="orchestrators">
+    <div class="container">
+        <div class="section-heading reveal">
+            <span class="kicker">Orchestrators</span>
+            <h2>Hand off the whole task. Keep talking.</h2>
+            <p>Your main Claude stays free. Start a prompt with a comma and a hidden sub-orchestrator takes it: it starts agents in the right repos while you keep working. Its status and notices show in the Subs tab and the notification center.</p>
+        </div>
+
+        <div class="rule-columns">
+            <div class="rule-col reveal">
+                <span class="rule-kicker">, prefix</span>
+                <p><code>,add a login page</code> starts a sub-orchestrator in <code>.fleet/orchestrations/&lt;slug&gt;/</code>. You don't wait for it.</p>
+            </div>
+            <div class="rule-col reveal">
+                <span class="rule-kicker">Subs tab</span>
+                <p>The dashboard groups each sub with the agents it started, each with a live status mark. Stop or remove a sub from there.</p>
+            </div>
+            <div class="rule-col reveal">
+                <span class="rule-kicker">One repo? Skip the sub</span>
+                <p>A dispatch that names a repository starts a repo agent straight away, with no sub in between.</p>
+            </div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card win-card reveal">
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">subs.txt</span></div>
+                <div class="win-body">
+                    <h3>Sub-orchestrators</h3>
+                    <p>One prompt becomes a sub-orchestrator, and the sub becomes agents across your repos. Each agent works in its own worktree, and its status mark shows when it's done or needs you.</p>
+                    <div class="feature-visual mono">
+                        <div>&gt; <span class="accent-magenta">,add pagination to api and web</span></div>
+                        <div>sub1 <span class="accent">→ api agent · web agent</span></div>
+                        <div><span class="accent-green">✓</span> sub1 <span class="accent">done, in the Subs tab</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card win-card reveal">
+                <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">head.txt</span></div>
+                <div class="win-body">
+                    <h3>Head orchestrator, by voice</h3>
+                    <p>One Claude above all your projects, local and remote. <code>alt+o</code> from any pane opens it in voice mode: hold space and say where to go and what to dispatch.</p>
+                    <div class="feature-visual mono">
+                        <div>alt+o <span class="accent">head orchestrator</span></div>
+                        <div>hold space <span class="accent-magenta">"go to shop and dispatch: add a login page"</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="install-note section-note reveal">Voice needs a claude.ai login. Cross-session messages need Claude Code 2.1.234+ and are documented on Windows. Voice forwarding from a remote machine is experimental.</p>
+    </div>
+</section>
