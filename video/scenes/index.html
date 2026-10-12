@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>fleet promo</title>
+    <link rel="stylesheet" href="../node_modules/@xterm/xterm/css/xterm.css">
+    <link rel="stylesheet" href="../node_modules/@fontsource/jetbrains-mono/400.css">
+    <link rel="stylesheet" href="../node_modules/@fontsource/jetbrains-mono/700.css">
+    <link rel="stylesheet" href="promo.css">
+    <script src="../node_modules/@xterm/xterm/lib/xterm.js"></script>
+</head>
+<body>
+<main id="stage">
+
+    <!-- Hook: no logo first, a question the rest of the video answers. -->
+    <section class="scene scene-center" id="hook">
+        <p class="hook-line" data-in="0.2">Your agents write the code.</p>
+        <p class="hook-line hook-accent" data-in="1.6">Who decides what ships?</p>
+        <p class="hook-sub" data-in="3.0">fleet: orchestrate Claude Code agents, with you at every gate.</p>
+    </section>
+
+    <section class="scene" id="gates">
+        <div class="caption">
+            <span class="kicker" data-in="0.2">01 · Permissioned orchestration</span>
+            <h2 data-in="0.4">Claude runs fleet through 32 MCP tools. You decide what each may do.</h2>
+            <p data-in="0.9">Every tool is <b class="c-green">allow</b>, <b class="c-yellow">ask</b> or <b class="c-red">forbid</b>, per project. Git gates hold commit and push until you say yes.</p>
+        </div>
+        <div class="visual">
+            <div class="panel perms" data-in="0.6" data-out="5.6">
+                <div class="panel-title">permissions · project shop <span class="tag">illustration</span></div>
+                <div class="perm-group">MCP tools <span class="dim">reads allow, writes ask by default</span></div>
+                <div class="perm" data-in="1.0"><code>list_agents</code><span class="chip allow">allow</span></div>
+                <div class="perm" data-in="1.15"><code>agent_status</code><span class="chip allow">allow</span></div>
+                <div class="perm" data-in="1.3"><code>new_agent</code><span class="chip ask">ask</span></div>
+                <div class="perm" data-in="1.45"><code>dispatch</code><span class="chip ask">ask</span></div>
+                <div class="perm" data-in="1.6"><code>tell_agent</code><span class="chip ask">ask</span></div>
+                <div class="perm" data-in="1.75"><code>delete_worktree</code><span class="chip forbid">forbid</span></div>
+                <div class="perm-group" data-in="2.2">Git gates <span class="dim">written as Claude permission rules into every agent</span></div>
+                <div class="perm" data-in="2.4"><code>git commit</code><span class="chip ask">ask</span></div>
+                <div class="perm" data-in="2.55"><code>git push</code><span class="chip ask">ask</span></div>
+                <div class="perm" data-in="2.7"><code>merge PR</code><span class="chip allow">auto</span></div>
+            </div>
+            <div class="term-window" data-in="5.6">
+                <div class="term-bar"><i></i><i></i><i></i><span>agent api/add-health-endpoint</span></div>
+                <div class="term-host" data-clip="gates"></div>
+                <div class="callout" data-in="6.6">The commit gate fires: the agent waits for you.</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="scene" id="aidlc">
+        <div class="caption">
+            <span class="kicker" data-in="0.2">02 · Ai-DLC</span>
+            <h2 data-in="0.4">A staged process with human gates.</h2>
+            <p data-in="0.9">Specs, tests, reviews and a PR with evidence, not ad-hoc agent output. You approve at every gate; failures stop and ask.</p>
+        </div>
+        <div class="visual">
+            <div class="panel pipeline" data-in="0.5">
+                <div class="panel-title">sub-orchestrator · Ai-DLC <span class="tag">illustration</span></div>
+                <div class="profiles" data-in="0.8">
+                    <span class="dim">profile</span>
+                    <span class="chip">express</span><span class="chip">bugfix</span><span class="chip on">feature</span><span class="chip">refactor</span><span class="chip">research</span>
+                </div>
+                <div class="dlc">
+                    <ol class="stages"></ol>
+                    <div class="gate-card">
+                        <div class="dim">human gate</div>
+                        <div class="gate-stage"></div>
+                        <div class="gate-state"></div>
+                        <div class="gate-files dim">state.json + audit.jsonl record every step</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="scene" id="dispatch">
+        <div class="caption">
+            <span class="kicker" data-in="0.2">03 · Dispatch</span>
+            <h2 data-in="0.4">One <span class="c-orange">,</span> prompt. A sub-orchestrator takes it from there.</h2>
+            <p data-in="0.9">Start a prompt with a comma: a hidden sub-orchestrator starts agents in their own worktrees, across your repos, and reports back. Your main Claude stays free.</p>
+        </div>
+        <div class="visual">
+            <div class="term-window" data-in="0.3">
+                <div class="term-bar"><i></i><i></i><i></i><span>fleet · project shop</span></div>
+                <div class="term-host" data-clip="dispatch"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="scene" id="status">
+        <div class="caption">
+            <span class="kicker" data-in="0.2">04 · Live status</span>
+            <h2 data-in="0.4">Know which agent needs you, without watching panes.</h2>
+            <p data-in="0.9">Hooks report every agent's state. A toast and the notification center flag it; approve from there.</p>
+            <ul class="marks" data-in="1.4">
+                <li><span class="c-cyan">?</span> question</li>
+                <li><span class="c-yellow">!</span> permission</li>
+                <li><span class="c-green">✓</span> done</li>
+                <li><span class="c-red">✗</span> failed</li>
+                <li><span class="c-dim">…</span> stalled</li>
+            </ul>
+        </div>
+        <div class="visual">
+            <div class="term-window" data-in="0.3">
+                <div class="term-bar"><i></i><i></i><i></i><span>fleet · project shop</span></div>
+                <div class="term-host" data-clip="status"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="scene" id="mux">
+        <div class="caption">
+            <span class="kicker" data-in="0.2">05 · Multiplexer &amp; remotes</span>
+            <h2 data-in="0.4">Close the terminal. Your agents keep working.</h2>
+            <p data-in="0.9">fleet ships its own multiplexer. Detach, run <code>fleet attach</code>, and every pane is back. Drive a headless box over ssh the same way.</p>
+            <div class="cmds" data-in="8.4">
+                <div><span class="dim">$</span> ssh build-box fleet bridge</div>
+                <div><span class="dim">$</span> fleet attach --ssh build-box</div>
+            </div>
+        </div>
+        <div class="visual">
+            <div class="term-window" data-in="0.3">
+                <div class="term-bar"><i></i><i></i><i></i><span>terminal</span><em class="mux-state"></em></div>
+                <div class="term-host" data-clip="mux"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="scene" id="head">
+        <div class="caption">
+            <span class="kicker" data-in="0.2">06 · Head orchestrator</span>
+            <h2 data-in="0.4">One Claude above every project. Just say it.</h2>
+            <p data-in="0.9"><code>alt+o</code> from any pane opens the head orchestrator in voice mode: hold space and talk. It switches projects and relays dispatches, local or over ssh.</p>
+            <p class="fine" data-in="1.4">Voice needs a claude.ai login.</p>
+        </div>
+        <div class="visual">
+            <div class="panel head" data-in="0.5">
+                <div class="panel-title">head orchestrator <span class="tag">illustration</span></div>
+                <div class="head-body">
+                    <ul class="projects">
+                        <li class="dim">projects</li>
+                        <li data-project="shop">shop</li>
+                        <li data-project="techweb">techweb</li>
+                        <li data-project="build-box">build-box <span class="dim">ssh</span></li>
+                    </ul>
+                    <div class="convo">
+                        <div class="mic"><span class="mic-dot"></span><span class="mic-label">hold space</span><span class="wave"></span></div>
+                        <div class="said"><span class="said-text" data-type="2.2" data-cps="22">“go to techweb and dispatch: add a login page”</span></div>
+                        <div class="reply" data-in="5.0"><span class="c-green">✓</span> switched to <b>techweb</b></div>
+                        <div class="reply" data-in="5.8"><span class="c-green">✓</span> dispatched: <b>add a login page</b></div>
+                        <div class="reply dim" data-in="6.6">a sub-orchestrator is on it; it will report back</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="scene scene-center" id="outro">
+        <svg class="logo" viewBox="12 3 90 90" aria-label="fleet">
+            <path class="ship" data-ship="0" d="M28,18 L86,18 Q82.5,28 72,28 L28,28 L28,18 Z" fill="#c0caf5"/>
+            <path class="ship" data-ship="1" d="M28,31 L54,31 Q52.0,38 46,38 L28,38 L28,31 Z" fill="#c0caf5"/>
+            <path class="ship" data-ship="2" d="M28,41 L68,41 Q65.0,51 56,51 L28,51 L28,41 Z" fill="#c0caf5"/>
+            <path class="ship" data-ship="3" d="M28,54 L46,54 Q43.75,78 37,78 L28,78 L28,54 Z" fill="#ff9e64"/>
+        </svg>
+        <p class="wordmark" data-in="0.8">fleet</p>
+        <p class="tagline" data-in="1.2">Orchestrate Claude Code agents across your repos. You hold the gates.</p>
+        <div class="install" data-in="2.0">
+            <div><span class="dim">linux&nbsp;&nbsp;&nbsp;</span> curl -fsSL https://raw.githubusercontent.com/Redmern/fleet-tui/main/scripts/get-fleet.sh | sh</div>
+            <div><span class="dim">windows</span> irm https://raw.githubusercontent.com/Redmern/fleet-tui/main/scripts/get-fleet.ps1 | iex</div>
+        </div>
+        <p class="repo" data-in="2.6">github.com/Redmern/fleet-tui</p>
+    </section>
+
+</main>
+<script src="promo.js"></script>
+</body>
+</html>
