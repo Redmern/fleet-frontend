@@ -857,6 +857,22 @@ code, pre, .mono {
     background: #1a1b26;
 }
 
+/* ---------- Showcase (promo video) ---------- */
+.showcase-window {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    background: var(--bg-inset);
+}
+
+.showcase-video {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+}
+
 .demo-chapters {
     display: flex;
     flex-wrap: wrap;

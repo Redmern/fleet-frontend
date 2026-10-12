@@ -1,0 +1,30 @@
+@inject IWebHostEnvironment Env
+
+@* Renders only once the video unit has added the promo and its poster to wwwroot/media. *@
+@if (HasVideo)
+{
+    <section id="showcase">
+        <div class="container">
+            <div class="section-heading reveal">
+                <span class="kicker">In 90 seconds</span>
+                <h2>fleet, start to merge.</h2>
+                <p>Captioned, no sound needed.</p>
+            </div>
+
+            <div class="showcase-window reveal">
+                <video class="showcase-video" src="@VideoPath" poster="@PosterPath" controls preload="metadata" playsinline width="1920" height="1080">
+                    <a href="@VideoPath">Download the fleet promo video (mp4)</a>
+                </video>
+            </div>
+        </div>
+    </section>
+}
+
+@code {
+    private const string VideoPath = "media/fleet-promo.mp4";
+    private const string PosterPath = "media/fleet-promo-poster.jpg";
+
+    private bool HasVideo =>
+        Env.WebRootFileProvider.GetFileInfo(VideoPath).Exists
+        && Env.WebRootFileProvider.GetFileInfo(PosterPath).Exists;
+}
