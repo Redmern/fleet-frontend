@@ -29,7 +29,7 @@ services:
       - traefik.http.routers.fleet-frontend.entrypoints=https
       # DNS is at Hostinger, so HTTP-01 instead of frontdoor's default Cloudflare DNS-01
       - traefik.http.routers.fleet-frontend.tls.certresolver=letsencrypt
-      - traefik.http.routers.fleet-frontend.middlewares=www-to-apex@file
+      # www -> apex 301 is done by nginx (deploy/nginx.conf), not www-to-apex@file (308)
       - traefik.http.services.fleet-frontend.loadbalancer.server.port=8080
 
 networks:
