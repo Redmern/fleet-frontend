@@ -22,7 +22,7 @@ err() { echo "FAIL: $*" >&2; fail=1; }
 [[ -f "$index" ]] || { echo "FAIL: $index not found" >&2; exit 1; }
 
 # Sections the page must contain.
-required_ids=(install demo mcp showcase orchestrators ai-dlc features positioning compare weaker)
+required_ids=(install mcp showcase orchestrators ai-dlc features positioning compare weaker)
 for id in "${required_ids[@]}"; do
     grep -q "id=\"$id\"" "$index" || err "missing section id=\"$id\""
 done
@@ -99,9 +99,9 @@ section weaker | grep -qiF 'roadmap' || err "weaknesses note does not point to t
 grep -qF 'fleet <span class="accent-magenta">repo add' "$index" && err "'fleet repo add' is not a fleet CLI command"
 grep -qF 'Finish workflow' "$index" && err "'Finish workflow' card has no source in features.md"
 
-# Terminal recordings: both sections play an asciicast with chapter markers.
+# Terminal recording: the tour plays an asciicast with chapter markers.
 casts=$(grep -o -E 'data-cast="[^"]*"' "$index" | sed -E 's/data-cast="(.*)"/\1/' || true)
-[[ $(wc -w <<< "$casts") -ge 2 ]] || err "expected two terminal recordings (data-cast), found: $casts"
+[[ $(wc -w <<< "$casts") -eq 1 ]] || err "expected one terminal recording (data-cast), found: $casts"
 for cast in $casts; do
     file="$dist/$cast"
     [[ -f "$file" ]] || continue  # reported above as an unresolved reference
@@ -110,7 +110,7 @@ for cast in $casts; do
     head -n1 "$file" | grep -qE '"height": ?34' || err "$cast is not 34 rows high"
     grep -qE '^\[[0-9.]+, ?"m",' "$file" || err "$cast has no chapter markers"
 done
-for id in demo showcase; do
+for id in showcase; do
     section "$id" | grep -qF 'data-demo-player' || err "section #$id has no terminal recording (data-demo-player)"
 done
 grep -qF '<video' "$index" && err "<video> is back; the promo mp4 is retired from the page"

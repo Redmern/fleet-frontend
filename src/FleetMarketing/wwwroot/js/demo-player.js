@@ -1,4 +1,4 @@
-// The terminal recordings ("See it live", "The tour"): fleet sessions (asciicasts), played with
+// The terminal recording ("The tour"): a fleet session (asciicast), played with
 // the vendored asciinema-player. Each [data-demo-player] is set up on its own: its recording is
 // only fetched when it comes near the viewport, it plays while in view and pauses when it
 // leaves. Its markers ("m" events) become chapter buttons in the [data-demo-chapters] list of

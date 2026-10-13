@@ -860,8 +860,7 @@ code, pre, .mono {
 
 /* Live demo — a real fleet recording played by the vendored asciinema-player */
 
-/* The recordings are 120 columns, so these sections get a wider column than the rest. */
-#demo .container,
+/* The recording is 120 columns, so this section gets a wider column than the rest. */
 #showcase .container {
     width: 100%;
     max-width: calc(1100px + 48px);
