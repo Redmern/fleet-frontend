@@ -3,7 +3,7 @@
         <div class="section-heading reveal">
             <span class="kicker">Compared</span>
             <h2>fleet next to the tools you may know.</h2>
-            <p>Each answer comes from a public source, linked below. Where we found nothing, the cell says so; that doesn't mean the feature is missing.</p>
+            <p>Each answer comes from a public source, linked below. Where we found nothing, the cell says so (a dash on small screens); that doesn't mean the feature is missing.</p>
         </div>
 
         <div class="compare-scroll reveal" tabindex="0" role="region" aria-label="Comparison table, scrolls sideways">
@@ -26,7 +26,7 @@
                             {
                                 @if (cell.Verdict == Verdict.NotDocumented)
                                 {
-                                    <td class="cmp-cell cmp-nd" data-verdict="nd">Not documented</td>
+                                    <td class="cmp-cell cmp-nd" data-verdict="nd"><span class="cmp-nd-text">Not documented</span></td>
                                 }
                                 else
                                 {

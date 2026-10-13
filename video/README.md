@@ -1,7 +1,10 @@
 # fleet promo video
 
 An 83 s, 1920×1080, silent h264 mp4 of fleet's six most valuable features (from
-`docs/research/gap.md`), embedded on the site by `Showcase.razor`.
+`docs/research/gap.md`). It is a shareable file for social posts and the like. Since October 2026 the
+site no longer embeds it: the Showcase section plays a terminal recording of the same features
+instead, in the style of the "See it live" demo. That recording is built in `terminal/`
+(see `terminal/README.md`).
 
 ## Build
 
@@ -16,9 +19,6 @@ It writes `out/fleet-promo.mp4` and `out/fleet-promo-poster.jpg`. Check the resu
 ```sh
 bash check-video.sh out/fleet-promo.mp4   # 60–90 s, 1920×1080, h264 yuv420p, +faststart, < 15 MB
 ```
-
-To put the new render on the site, run `npm run media`. It copies both files into
-`src/FleetMarketing/wwwroot/media/`, and the Showcase section renders once both are there.
 
 Requirements: Node 20+, `ffmpeg`/`ffprobe` on PATH, and a Chromium or Chrome binary.
 The render looks in the usual install paths; set `CHROME_PATH` to use another.

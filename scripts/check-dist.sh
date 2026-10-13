@@ -8,8 +8,9 @@
 #   - an internal link or asset (href, src, poster, data-cast, css url()) does
 #     not resolve to a file in the export, or a #fragment has no matching id
 #   - known copy defects come back (typo, harness overclaim)
-#   - the promo video is exported but its section/element is missing or
-#     autoplays, or the section renders without the video file
+#   - a terminal recording (data-cast) is not a 120x34 asciicast v2 with
+#     chapter markers, or a <video> comes back (the promo mp4 is retired)
+#   - og:image / twitter:image is not a PNG that ships in the export
 set -euo pipefail
 
 dist="${1:-dist}"
@@ -21,7 +22,7 @@ err() { echo "FAIL: $*" >&2; fail=1; }
 [[ -f "$index" ]] || { echo "FAIL: $index not found" >&2; exit 1; }
 
 # Sections the page must contain.
-required_ids=(install mcp orchestrators ai-dlc features positioning compare weaker)
+required_ids=(install demo mcp showcase orchestrators ai-dlc features positioning compare weaker)
 for id in "${required_ids[@]}"; do
     grep -q "id=\"$id\"" "$index" || err "missing section id=\"$id\""
 done
@@ -98,18 +99,28 @@ section weaker | grep -qiF 'roadmap' || err "weaknesses note does not point to t
 grep -qF 'fleet <span class="accent-magenta">repo add' "$index" && err "'fleet repo add' is not a fleet CLI command"
 grep -qF 'Finish workflow' "$index" && err "'Finish workflow' card has no source in features.md"
 
-# Promo video: rendered only when the file exists.
-if [[ -f "$dist/media/fleet-promo.mp4" ]]; then
-    grep -qF 'id="showcase"' "$index" || err "media/fleet-promo.mp4 exported but section id=\"showcase\" missing"
-    video=$(grep -o -E '<video[^>]*>' "$index" | head -n1 || true)
-    [[ -n "$video" ]] || err "no <video> element"
-    [[ "$video" == *controls* ]] || err "<video> lacks controls"
-    [[ "$video" == *poster=* ]] || err "<video> lacks poster"
-    [[ "$video" == *'preload="metadata"'* ]] || err "<video> lacks preload=\"metadata\""
-    [[ "$video" == *autoplay* ]] && err "<video> must not autoplay"
-else
-    grep -qF '<video' "$index" && err "<video> rendered but media/fleet-promo.mp4 is absent"
-fi
+# Terminal recordings: both sections play an asciicast with chapter markers.
+casts=$(grep -o -E 'data-cast="[^"]*"' "$index" | sed -E 's/data-cast="(.*)"/\1/' || true)
+[[ $(wc -w <<< "$casts") -ge 2 ]] || err "expected two terminal recordings (data-cast), found: $casts"
+for cast in $casts; do
+    file="$dist/$cast"
+    [[ -f "$file" ]] || continue  # reported above as an unresolved reference
+    head -n1 "$file" | grep -qE '"version": ?2' || err "$cast is not an asciicast v2"
+    head -n1 "$file" | grep -qE '"width": ?120' || err "$cast is not 120 columns wide"
+    head -n1 "$file" | grep -qE '"height": ?34' || err "$cast is not 34 rows high"
+    grep -qE '^\[[0-9.]+, ?"m",' "$file" || err "$cast has no chapter markers"
+done
+for id in demo showcase; do
+    section "$id" | grep -qF 'data-demo-player' || err "section #$id has no terminal recording (data-demo-player)"
+done
+grep -qF '<video' "$index" && err "<video> is back; the promo mp4 is retired from the page"
+
+# Social preview: a PNG (crawlers skip SVG) that the export contains.
+for prop in 'property="og:image"' 'name="twitter:image"'; do
+    url=$(grep -o -E "<meta $prop content=\"[^\"]*\"" "$index" | sed -E 's/.*content="(.*)"/\1/' || true)
+    [[ "$url" == *.png ]] || err "$prop is not a PNG: '$url'"
+    [[ -f "$dist/${url##*/}" ]] || err "$prop file ${url##*/} is not in $dist"
+done
 
 if [[ $fail -ne 0 ]]; then
     echo "check-dist: FAILED" >&2

@@ -3,12 +3,13 @@
 ## What this is
 
 A single-page marketing/landing site for fleet (github.com/Redmern/fleet-tui), built with
-Blazor and exported to plain static HTML for GitHub Pages. No backend, no database, no
+Blazor and exported to plain static HTML. It is served at https://fleet-tui.dev from a VPS
+(deployment in Redmern/fleet-deploy); the GitHub Pages workflow below still works as a fallback. No backend, no database, no
 client-side state beyond a couple of `localStorage` conveniences.
 
 ## Architecture: Blazor static SSR + a custom static-site export step
 
-`src/FleetMarketing` is a .NET 8 Blazor Web App. Its `Program.cs` only calls
+`src/FleetMarketing` is a .NET 10 Blazor Web App (it started on .NET 8). Its `Program.cs` only calls
 `AddRazorComponents()` / `MapRazorComponents<App>()` — no `AddInteractiveServerComponents()`
 or `AddInteractiveWebAssemblyComponents()`, and no `.razor` component declares an
 `@rendermode`. That means every page renders once, on the server, to plain HTML with no
@@ -17,7 +18,7 @@ reference `blazor.web.js` — it wasn't needed for a page with no interactive re
 
 That gets you "static SSR" as a *rendering technique*, but Blazor Web Apps still assume a
 live ASP.NET Core process is answering each request — there's no built-in "export to
-files" mode in .NET 8, and GitHub Pages can only serve files, not run a server. I looked at
+files" mode in Blazor, and GitHub Pages can only serve files, not run a server. I looked at
 the realistic options for closing that gap:
 
 - **Blazor WebAssembly (standalone)** — does produce static files, but ships the whole
@@ -55,15 +56,16 @@ code alone:
 - The client's `BaseAddress` is set to `https://localhost` up front to avoid a redirect
   round-trip through `UseHttpsRedirection()`.
 
-**Progressive enhancement, kept deliberately non-Blazor:** the three interactive bits
-called out in the brief — the animated terminal mockup, copy-to-clipboard, and the
-Windows/Linux platform toggle — are hand-written vanilla JS (`wwwroot/js/terminal-mockup.js`,
-`wwwroot/js/site.js`), not Blazor WASM islands. Shipping the WASM runtime just to animate
+**Progressive enhancement, kept deliberately non-Blazor:** the interactive bits — the
+terminal recordings, copy-to-clipboard, and the Windows/Linux platform toggle — are
+hand-written vanilla JS (`wwwroot/js/demo-player.js` around the vendored asciinema-player,
+`wwwroot/js/site.js`), not Blazor WASM islands. (The first version animated a scripted
+mockup, `terminal-mockup.js`; real recordings replaced it.) Shipping the WASM runtime just to animate
 three small widgets would have meant abandoning the "no JS required for core content" goal
 to get progressive enhancement for a handful of DOM tweaks. All three degrade gracefully:
 the install commands are already correct static HTML (JS only swaps which one is visible),
-copy buttons no-op silently if `navigator.clipboard` is unavailable, and the terminal mockup
-has a static `<noscript>` fallback and respects `prefers-reduced-motion`.
+copy buttons no-op silently if `navigator.clipboard` is unavailable, and the recordings
+have a `<noscript>` description and respect `prefers-reduced-motion`.
 
 ## Verified locally
 
@@ -72,7 +74,7 @@ has a static `<noscript>` fallback and respects `prefers-reduced-motion`.
   in a real browser: hero, terminal mockup animation, platform toggle, copy buttons, the
   features/requirements/install sections all render and no console errors.
 - `dotnet run --project src/FleetMarketing.Ssg -- <dir>` — produces `index.html` +
-  `app.css` + `js/*.js` + `og-image.svg` + `favicon.svg` in the target directory; opened the
+  `app.css` + `js/*.js` + `og-image.png` + `favicon.svg` in the target directory; opened the
   exported `index.html` directly and it matches the live dev-server render.
 
 ## Local development (hot reload)
@@ -127,14 +129,10 @@ The brief's install one-liners and macOS note were written without repo access. 
 
 ## Other placeholders / TODOs left in the code
 
-- `wwwroot/og-image.svg` — a generated terminal-styled graphic, not a real screenshot (none
-  exists yet, per the brief). Flagged with an HTML comment in `App.razor`: some crawlers
-  (Twitter/Facebook) prefer PNG/JPG over SVG for `og:image`, so this should become a
-  rendered PNG once a real terminal recording exists.
-- The animated hero mockup is deliberately generic about *which* fleet UI details it shows
-  — it sticks to the mechanics described in the brief (project picker → dashboard → dispatch
-  → activity dot going from working to done) rather than inventing exact TUI chrome I
-  haven't seen.
+- `wwwroot/og-image.png` is a frame of the real recording, rendered by
+  `video/terminal/frame.mjs --og` (it replaced a generated SVG placeholder).
+- fleet-tui still has no LICENSE file, so the site says "free, source on GitHub" rather than
+  naming a licence; the comparison table's "Open source" cell for fleet needs one to be true.
 
 ## Visual direction
 
@@ -143,3 +141,49 @@ layout borrows a few structural ideas from typesafe.ai (oversized bold display h
 a single flat-color full-bleed statement band with a halftone texture and corner crop-marks,
 thin-rule kicker-labeled columns, and OS-window-style chrome on the feature cards) — with
 fleet's own colors, not theirs.
+
+## Content review, 2026-10-12
+
+Fixed in this pass:
+
+- **The second video is now a terminal recording of fleet 0.7.17.** It is "The tour" in
+  Showcase, with the same player and chapters as "See it live". It covers the promo's
+  features: permissions, Ai-DLC, dispatch, gates and notifications, detach, and the head. The
+  promo mp4 and its poster left the page, and `video/` still renders the mp4 as a shareable
+  file. How it was recorded, and what it leaves out, is in `video/terminal/README.md`.
+- **Social preview.** `og:image` is a 1200x630 PNG of a real frame. It was a placeholder SVG.
+- **Head.** `SiteUrl` defaults to https://fleet-tui.dev/, and there is a canonical link. The
+  dangling Google Fonts preconnect is gone.
+- **Lead copy.** The title, meta, og and twitter text and the hero lede lead with gated
+  orchestration and Ai-DLC.
+- **macOS** is marked "source" in the hero eyebrow and "from source" in the OS band.
+- **Harness wording.** Requirements say Claude Code, with Neovim as the only alternative. They
+  no longer say "bring your agent".
+- **MCP tool count.** 30, not 32. This was checked with `tools/list` against the 0.7.17 binary:
+  `fleet mcp --project` lists 30 tools, and `--head` lists 17.
+- **Navigation** gains Demo, Permissions and Ai-DLC.
+- **Ai-DLC** shows the feature profile's stages and human gates, the same list the promo uses.
+- **Comparison table on phones.** It no longer needs 980 px; "Not documented" shows as a dash
+  (the words stay for screen readers).
+- **"Free and open source"** became "free, source on GitHub" (see the licence item below).
+
+Still open:
+
+- **Licence.** fleet-tui has no LICENSE file. GitHub's API reports no licence on 2026-10-12.
+  The comparison table still marks fleet "Yes" under "Open source", and that column means "an
+  open-source licence". Either publish a licence or change that cell. Changing it would also
+  change check-dist's rule that fleet has exactly one "Partly" cell.
+- **"See it live"** was recorded with an older fleet, and its dashboard looks different from
+  0.7.17. `video/terminal` can record a new one.
+- **Mock windows.** The Features and MCP cards are still text in mock windows.
+  `video/terminal/frame.mjs` can render real stills from either recording if you want images
+  there.
+- **The promo mp4** still says 32 MCP tools in the rendered file. The scene source now says
+  30, but the mp4 was not re-rendered: there was no ffmpeg or working Chromium on the build
+  machine.
+- **The nav is hidden below 640 px**, and there is no menu button.
+- **fleet issues found while recording** (for fleet-tui, not this site):
+  - `add_repository` with a `file://` URL creates a literal `file:` folder tree and reports
+    success. With a plain local path it fails.
+  - With "Start a new agent" set to ask (both channels), a sub-orchestrator's `new_agent` call
+    started the agent without a visible Allow/Deny dialog.

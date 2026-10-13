@@ -6,10 +6,12 @@
   "scripts": {
     "render": "node render.mjs",
     "preview": "node render.mjs --stills",
-    "media": "node render.mjs --publish"
+    "tour": "node terminal/cut.mjs terminal/takes/take1.jsonl.gz terminal/edit.json ../src/FleetMarketing/wwwroot/casts/fleet-tour.cast"
   },
   "devDependencies": {
     "@fontsource/jetbrains-mono": "5.3.0",
+    "@xterm/addon-serialize": "0.14.0",
+    "@xterm/headless": "6.0.0",
     "@xterm/xterm": "6.0.0",
     "playwright-core": "1.64.0"
   }

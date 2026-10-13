@@ -142,6 +142,7 @@ Merge for the site: 3 into 1 (Project window + Dashboard); 5 into 4; 6 into 4 or
 ## Corrections to discover.md
 1. Path: `/home/red/repos/fleet/fleet-tui/release_0.7.17/` does not exist. fleet-tui is a bare repo with only a stale `main/` worktree (README there is at the same 70 KB scale; its RELEASE_NOTES top entry is 0.7.15). Read the branch via `git archive release/0.7.17`.
 2. "~30 tools": HTI has 32 ids, including `delete_worktree`, `remove_repository` and `sync_to_remote` (HTI:22, 24, 42). The tool-id file is lines 10-43, not 10-40.
+   Checked 2026-10-12 with an MCP `tools/list` against the installed 0.7.17 binary: `fleet mcp --project` exposes 30 tools (no `delete_worktree`, no `sync_to_remote`); `fleet mcp --head` exposes 17. The site now says 30.
 3. "Linux ... macOS source-build only": correct, but the README's actual primary platform is Windows (Visual Studio Build Tools, PowerShell first, winget); Linux and Windows x64 are the only published binaries (README:178-180). Lead with that when stating platform support.
 4. "Dashboard tabs: Agents, Subs, Repositories, Notifications (749)": README:749-751 still says "Two tabs, Agents and Repositories" (stale). Notifications tab is at README:574-576, Subs at README:1001-1004. Cite those, not 749.
 5. "Secrets distribution (distribute_secrets, DESIGN.md:2102)": correct, but README never mentions it; only DESIGN and HTI:30.

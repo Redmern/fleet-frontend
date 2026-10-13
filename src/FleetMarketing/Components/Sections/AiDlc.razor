@@ -6,6 +6,26 @@
             <p>Turn it on per project and a sub-orchestrator works in stages: specify, plan, build, review, deliver. At each gate it stops and asks you. Failures always stop and ask.</p>
         </div>
 
+        <div class="dlc-panel win-card reveal">
+            <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">sub-orchestrator · Ai-DLC · feature profile</span></div>
+            <ol class="dlc-stages" role="list" aria-label="Stages of the feature profile">
+                @foreach (var stage in Stages)
+                {
+                    <li class="dlc-stage@(stage.Gate ? " gated" : null)">
+                        <span class="dlc-name">@stage.Name</span>
+                        @if (stage.Skill is not null)
+                        {
+                            <code class="dlc-skill">@stage.Skill</code>
+                        }
+                        @if (stage.Gate)
+                        {
+                            <span class="dlc-gate"><span class="dlc-diamond" aria-hidden="true"></span>you approve</span>
+                        }
+                    </li>
+                }
+            </ol>
+        </div>
+
         <div class="steps">
             <div class="step reveal">
                 <div class="step-index">profiles</div>
@@ -32,3 +52,21 @@
         <p class="install-note section-note reveal">Off by default (mode off, on or manual). The bundled skills are written for .NET repos.</p>
     </div>
 </section>
+
+@code {
+    private sealed record Stage(string Name, string? Skill = null, bool Gate = false);
+
+    // The feature profile's stages and human gates, as in a real state.json (the same list as the promo video).
+    private static readonly Stage[] Stages =
+    [
+        new("intake"),
+        new("discover"),
+        new("specify", "fl-discuss", Gate: true),
+        new("plan", Gate: true),
+        new("build", "fl-tdd", Gate: true),
+        new("verify"),
+        new("review", "fl-review"),
+        new("deliver", "fl-pr", Gate: true),
+        new("learn"),
+    ];
+}

@@ -3,12 +3,11 @@
 //   node render.mjs               out/fleet-promo.mp4 + out/fleet-promo-poster.jpg
 //   node render.mjs --stills      one PNG per scene (at 75% of it) in out/stills/, no video
 //   node render.mjs --stills --at=12,45.5   PNGs at those seconds instead
-//   node render.mjs --publish     copy the rendered mp4 + poster into the site's wwwroot/media
 //
 // Needs ffmpeg on PATH and a Chromium/Chrome binary (CHROME_PATH, or a usual install path).
 import { chromium } from "playwright-core";
 import { spawn } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, copyFileSync, statSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -17,7 +16,6 @@ const outDir = join(here, "out");
 const mp4 = join(outDir, "fleet-promo.mp4");
 const poster = join(outDir, "fleet-promo-poster.jpg");
 const castPath = join(here, "..", "src", "FleetMarketing", "wwwroot", "casts", "fleet-demo.cast");
-const mediaDir = join(here, "..", "src", "FleetMarketing", "wwwroot", "media");
 
 const FPS = 30;
 const WIDTH = 1920;
@@ -26,17 +24,6 @@ const HEIGHT = 1080;
 const POSTER_SCENE = "dispatch";
 
 const args = process.argv.slice(2);
-
-if (args.includes("--publish")) {
-    for (const f of [mp4, poster]) {
-        if (!existsSync(f)) throw new Error(`${f} missing; run npm run render first`);
-    }
-    mkdirSync(mediaDir, { recursive: true });
-    copyFileSync(mp4, join(mediaDir, "fleet-promo.mp4"));
-    copyFileSync(poster, join(mediaDir, "fleet-promo-poster.jpg"));
-    console.log(`copied mp4 + poster to ${mediaDir}`);
-    process.exit(0);
-}
 
 function findChrome() {
     const candidates = [

@@ -749,6 +749,20 @@ code, pre, .mono {
     white-space: nowrap;
 }
 
+/* macOS has no published binary: the hero eyebrow and the OS band say "source" next to it. */
+.eyebrow-source {
+    text-transform: lowercase;
+    opacity: 0.75;
+}
+
+.statement-aside {
+    font-size: 0.4em;
+    font-weight: 600;
+    letter-spacing: 0;
+    opacity: 0.7;
+    vertical-align: middle;
+}
+
 /* In the big "Windows. Linux. macOS." band the logos lead each line. */
 .display-heading .os-icon {
     width: 0.8em;
@@ -846,8 +860,9 @@ code, pre, .mono {
 
 /* Live demo — a real fleet recording played by the vendored asciinema-player */
 
-/* The recording is 120 columns, so this section gets a wider column than the rest. */
-#demo .container {
+/* The recordings are 120 columns, so these sections get a wider column than the rest. */
+#demo .container,
+#showcase .container {
     width: 100%;
     max-width: calc(1100px + 48px);
 }
@@ -860,22 +875,6 @@ code, pre, .mono {
     box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.6);
     overflow: hidden;
     background: #1a1b26;
-}
-
-/* ---------- Showcase (promo video) ---------- */
-.showcase-window {
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.6);
-    overflow: hidden;
-    background: var(--bg-inset);
-}
-
-.showcase-video {
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 9;
 }
 
 .demo-chapters {
@@ -987,6 +986,85 @@ code, pre, .mono {
 }
 
 /* How it works */
+
+/* Ai-DLC: the feature profile's stages as a pipeline; diamonds mark the human gates. */
+.dlc-panel {
+    margin-bottom: 32px;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.dlc-stages {
+    display: grid;
+    /* Nine stages in a row where they fit; they wrap onto more rows where they don't. */
+    grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+    gap: 8px;
+    margin: 0;
+    padding: 20px;
+    list-style: none;
+    font-family: var(--font-mono);
+    counter-reset: dlc;
+}
+
+.dlc-stage {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-inset);
+    counter-increment: dlc;
+}
+
+.dlc-stage::before {
+    content: counter(dlc);
+    content: counter(dlc) / "";
+    color: var(--fg-muted);
+    font-size: 0.75rem;
+}
+
+.dlc-name {
+    color: var(--fg);
+    font-weight: 700;
+}
+
+.dlc-skill {
+    color: var(--cyan);
+    font-size: 0.78rem;
+    background: none;
+    padding: 0;
+}
+
+.dlc-stage.gated {
+    border-color: color-mix(in srgb, var(--yellow) 55%, var(--border));
+    background: color-mix(in srgb, var(--yellow) 8%, var(--bg-inset));
+}
+
+.dlc-gate {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+    color: var(--yellow);
+    font-size: 0.72rem;
+}
+
+.dlc-diamond {
+    width: 9px;
+    height: 9px;
+    transform: rotate(45deg);
+    border: 2px solid var(--yellow);
+    background: color-mix(in srgb, var(--yellow) 35%, transparent);
+}
+
+@media (max-width: 900px) {
+    .dlc-stages {
+        padding: 14px;
+    }
+}
 
 .steps {
     display: grid;
@@ -1238,10 +1316,46 @@ code, pre, .mono {
     font-weight: 600;
 }
 
+/* Phones: a tighter table; "Not documented" becomes a dash (the words stay for screen readers). */
 @media (max-width: 640px) {
+    .compare-table {
+        min-width: 0;
+        font-size: 0.78rem;
+    }
+
+    .compare-table th, .compare-table td {
+        padding: 8px 8px;
+    }
+
+    .compare-table thead th {
+        white-space: normal;
+        min-width: 4.5rem;
+        font-size: 0.68rem;
+    }
+
     .compare-table tbody th {
         white-space: normal;
-        min-width: 7.5rem;
+        min-width: 6.5rem;
+    }
+
+    .cmp-nd {
+        position: relative; /* keeps the hidden text inside the scrolling table */
+        text-align: center;
+    }
+
+    .cmp-nd::before {
+        content: "–";
+        content: "–" / "";
+        color: var(--fg-muted);
+    }
+
+    .cmp-nd-text {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
     }
 }
 
