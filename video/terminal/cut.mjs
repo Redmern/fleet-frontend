@@ -33,16 +33,16 @@ const lines = (rawPath.endsWith(".gz") ? gunzipSync(raw) : raw).toString("utf8")
 const header = JSON.parse(lines[0]);
 const events = lines.slice(1).map(l => JSON.parse(l)).filter(e => e[1] === "o");
 
-// The user name is swapped for a placeholder of the same length wherever it appears as a path
-// segment. fleet redraws lines in pieces, so "/home/" is not always in the same write.
+// --scrub (on a raw take, before it is committed) also swaps the recording user's name for a
+// placeholder of the same length wherever it is a path segment: fleet redraws lines in pieces,
+// so "/home/" is not always in the same write. SCRUB_USER names that user if it isn't you.
+// Cutting a committed take does not use this rule, so the result doesn't depend on who cuts.
 const user = process.env.SCRUB_USER || userInfo().username;
 const placeholder = (user.length === 3 ? "you" : "user").padEnd(user.length, "_").slice(0, user.length);
-const userSegment = new RegExp(`/${user.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?=/)`, "g");
-const scrubs = [
-    [userSegment, () => "/" + placeholder],
-    [/ · Claude (Max|Pro|Team|Enterprise)/g, m => " ".repeat(m.length)],
-];
-const scrub = text => scrubs.reduce((t, [re, fn]) => t.replace(re, fn), text);
+const userSegment = new RegExp(`/${user.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?=[/'"\\s]|$)`, "g");
+const planName = [/ · Claude (Max|Pro|Team|Enterprise)/g, m => " ".repeat(m.length)];
+const scrub = text => text.replace(...planName);
+const scrubTake = text => scrub(text).replace(userSegment, "/" + placeholder);
 
 function terminal() {
     const term = new Terminal({ cols: header.width, rows: header.height, allowProposedApi: true, scrollback: 0 });
@@ -66,7 +66,7 @@ function screenText(term) {
 }
 
 if (second === "--scrub") {
-    const scrubbed = lines.slice(1).map(l => JSON.parse(l)).map(e => (e[1] === "o" ? [e[0], e[1], scrub(e[2])] : e));
+    const scrubbed = lines.slice(1).map(l => JSON.parse(l)).map(e => (e[1] === "o" ? [e[0], e[1], scrubTake(e[2])] : e));
     writeFileSync(third, [lines[0], ...scrubbed.map(e => JSON.stringify(e))].join("\n") + "\n");
     process.exit(0);
 }

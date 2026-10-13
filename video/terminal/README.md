@@ -87,3 +87,5 @@ env -u FLEET_ENDPOINT FLEET_CONFIG_HOME=/tmp/fleet-demo/config XDG_RUNTIME_DIR=/
 
 Before you commit a take, scrub it, because the recorder writes it as is:
 `node terminal/cut.mjs raw.jsonl --scrub take.jsonl`, then `gzip -9 -n take.jsonl`.
+The scrub replaces your user name in paths. Set `SCRUB_USER` if someone else recorded the take.
+Cutting a committed take never needs it, so the cut is the same whoever runs it.

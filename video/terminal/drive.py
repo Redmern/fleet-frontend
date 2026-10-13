@@ -13,7 +13,7 @@ Commands are JSON lines written to <workdir>/cmd (a FIFO):
     {"type": "text", "cps": 12}   type text at a human pace
     {"marker": "Open a project"}  a chapter marker at this moment
     {"dump": true}                write the screen to <workdir>/screen.txt
-    {"quit": true}                stop recording now (the processes in the pty get SIGHUP)
+    {"quit": true}                stop recording once queued input is sent (the pty gets SIGHUP)
 """
 import codecs
 import json
@@ -75,8 +75,9 @@ def main():
     cmd_fd = os.open(fifo, os.O_RDWR | os.O_NONBLOCK)
     pending = b""
     decoder = codecs.getincrementaldecoder("utf-8")("replace")
-    # Keys and typed text share one queue, so they reach the pty in the order they were sent.
-    typing = []  # queued (due_time, bytes)
+    # Keys, typed text and markers share one queue, so they happen in the order they were sent.
+    queue = []  # (due_time, "input" | "marker" | "stop", payload)
+    stopped = False
 
     def now():
         return round(time.monotonic() - start, 3)
@@ -87,22 +88,24 @@ def main():
             f.write("\n".join(screen.display) + "\n")
 
     def handle(cmd):
-        due = max(time.monotonic(), typing[-1][0] if typing else 0)
-        if "keys" in cmd:
-            typing.append((due, cmd["keys"].encode()))
+        gap = 1.0 / cmd.get("cps", 12)
+        # A short pause after earlier input, so a key is never in the same write as the last
+        # typed character (Claude Code would read "text + Enter" in one write as a paste).
+        due = max(time.monotonic(), queue[-1][0] + gap if queue else 0)
         if "type" in cmd:
-            gap = 1.0 / cmd.get("cps", 12)
-            for ch in cmd["type"]:
-                typing.append((due, ch.encode()))
+            for ch in str(cmd["type"]):
+                queue.append((due, "input", ch.encode()))
                 due += gap
+        if "keys" in cmd:
+            queue.append((due, "input", str(cmd["keys"]).encode()))
         if "marker" in cmd:
-            raw.write(json.dumps([now(), "m", cmd["marker"]]) + "\n")
+            queue.append((due, "marker", str(cmd["marker"])))
         if cmd.get("dump"):
             dump()
-        return not cmd.get("quit")
+        if cmd.get("quit"):
+            queue.append((due + 1.0, "stop", None))  # a second to record what the last input prints
 
-    alive = True
-    while alive:
+    while not stopped:
         r, _, _ = select.select([fd, cmd_fd], [], [], 0.02)
         if fd in r:
             try:
@@ -129,13 +132,19 @@ def main():
                     continue
                 try:
                     cmd = json.loads(line)
+                    if not isinstance(cmd, dict):
+                        raise ValueError("not a JSON object")
+                    handle(cmd)
                 except ValueError as err:  # a typo must not end the take
                     print(f"drive: ignored bad command {line!r}: {err}", file=sys.stderr)
-                    continue
-                if not handle(cmd):
-                    alive = False
-        while typing and typing[0][0] <= time.monotonic():
-            os.write(fd, typing.pop(0)[1])
+        while queue and queue[0][0] <= time.monotonic():
+            _, kind, payload = queue.pop(0)
+            if kind == "stop":
+                stopped = True
+            elif kind == "marker":
+                raw.write(json.dumps([now(), "m", payload]) + "\n")
+            else:
+                os.write(fd, payload)
 
     raw.close()
     try:
