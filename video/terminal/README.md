@@ -15,8 +15,8 @@ frame is output fleet or Claude printed. The edit only does two things:
 - **A repaint at every cut.** At each cut it draws the real screen from that moment (see
   `cut.mjs`).
 
-Two strings are blanked, keeping each line's width: the home folder in two paths, and the
-Claude plan name.
+Two things are replaced, keeping each line's width: the local user name in paths (it
+reads `/home/you/`), and the Claude plan name.
 
 | Chapter | What happens |
 |---|---|
@@ -28,7 +28,7 @@ Claude plan name.
 | Commit gate | the agent's `git commit` asks (a fleet git gate); it is approved from the notification center |
 | Deliver | there is no GitHub remote, so the sub asks how to deliver; the pushed branch is accepted |
 | Detach & reattach | `ctrl+s d`, then `fleet attach` |
-| Head orchestrator | `alt+o` opens the head; it answers across projects |
+| Head orchestrator | `alt+o` opens the head; it reports on every project (here, the one) |
 
 ## What is not shown
 

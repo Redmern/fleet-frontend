@@ -13,7 +13,7 @@ Commands are JSON lines written to <workdir>/cmd (a FIFO):
     {"type": "text", "cps": 12}   type text at a human pace
     {"marker": "Open a project"}  a chapter marker at this moment
     {"dump": true}                write the screen to <workdir>/screen.txt
-    {"quit": true}                stop recording (the processes in the pty get SIGHUP)
+    {"quit": true}                stop recording now (the processes in the pty get SIGHUP)
 """
 import codecs
 import json
@@ -75,6 +75,7 @@ def main():
     cmd_fd = os.open(fifo, os.O_RDWR | os.O_NONBLOCK)
     pending = b""
     decoder = codecs.getincrementaldecoder("utf-8")("replace")
+    # Keys and typed text share one queue, so they reach the pty in the order they were sent.
     typing = []  # queued (due_time, bytes)
 
     def now():
@@ -86,11 +87,11 @@ def main():
             f.write("\n".join(screen.display) + "\n")
 
     def handle(cmd):
+        due = max(time.monotonic(), typing[-1][0] if typing else 0)
         if "keys" in cmd:
-            os.write(fd, cmd["keys"].encode())
+            typing.append((due, cmd["keys"].encode()))
         if "type" in cmd:
             gap = 1.0 / cmd.get("cps", 12)
-            due = time.monotonic()
             for ch in cmd["type"]:
                 typing.append((due, ch.encode()))
                 due += gap
@@ -124,7 +125,14 @@ def main():
             pending += os.read(cmd_fd, 65536)
             while b"\n" in pending:
                 line, pending = pending.split(b"\n", 1)
-                if line.strip() and not handle(json.loads(line)):
+                if not line.strip():
+                    continue
+                try:
+                    cmd = json.loads(line)
+                except ValueError as err:  # a typo must not end the take
+                    print(f"drive: ignored bad command {line!r}: {err}", file=sys.stderr)
+                    continue
+                if not handle(cmd):
                     alive = False
         while typing and typing[0][0] <= time.monotonic():
             os.write(fd, typing.pop(0)[1])

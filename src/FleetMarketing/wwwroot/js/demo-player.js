@@ -29,8 +29,8 @@
     }
 
     function setup(root) {
-        var window_ = root.closest(".demo-window");
-        var chapterList = window_ ? window_.querySelector("[data-demo-chapters]") : null;
+        var frame = root.closest(".demo-window");
+        var chapterList = frame ? frame.querySelector("[data-demo-chapters]") : null;
         var player = null;
 
         function showChapters(markers) {

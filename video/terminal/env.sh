@@ -5,7 +5,7 @@
 #
 #   bash env.sh <demo-root> <workdir>
 set -euo pipefail
-root="$1"; work="$2"
+root="$(realpath -m "$1")"; work="$(realpath -m "$2")"
 here="$(cd "$(dirname "$0")" && pwd)"
 mkdir -p "$root/config" "$root/run"; chmod 700 "$root/run"
 exec env -u FLEET_ENDPOINT -u FLEET_PANE -u FLEET_PANE_TOKEN -u FLEET_REMOTE_DAEMON -u FLEET_MUX \

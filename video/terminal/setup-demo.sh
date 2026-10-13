@@ -4,10 +4,15 @@
 #   <root>/shop/<repo>/.git      bare repo with a "main" worktree, as fleet creates them
 #   <root>/config/projects/shop.json
 #
-#   bash setup-demo.sh /tmp/fleet-demo     (deletes and recreates that folder)
+#   bash setup-demo.sh /tmp/fleet-demo     (recreates that folder; refuses one that is not a demo)
 set -euo pipefail
-root="$1"
+root="$(realpath -m "${1:?usage: setup-demo.sh <demo-root>}")"
 here="$(cd "$(dirname "$0")" && pwd)"
+# Only ever delete an empty folder or an earlier demo.
+if [[ -e "$root" && -n "$(ls -A "$root")" && ! -f "$root/config/projects/shop.json" ]]; then
+    echo "$root is not empty and not an earlier demo; refusing to delete it" >&2
+    exit 1
+fi
 export GIT_AUTHOR_NAME="fleet demo" GIT_AUTHOR_EMAIL=demo@example.com
 export GIT_COMMITTER_NAME="fleet demo" GIT_COMMITTER_EMAIL=demo@example.com
 

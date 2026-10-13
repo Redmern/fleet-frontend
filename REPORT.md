@@ -130,7 +130,7 @@ The brief's install one-liners and macOS note were written without repo access. 
 ## Other placeholders / TODOs left in the code
 
 - `wwwroot/og-image.png` is a frame of the real recording, rendered by
-  `video/og-image.mjs` (it replaced a generated SVG placeholder).
+  `video/terminal/frame.mjs --og` (it replaced a generated SVG placeholder).
 - fleet-tui still has no LICENSE file, so the site says "free, source on GitHub" rather than
   naming a licence; the comparison table's "Open source" cell for fleet needs one to be true.
 

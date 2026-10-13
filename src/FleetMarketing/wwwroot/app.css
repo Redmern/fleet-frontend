@@ -997,7 +997,8 @@ code, pre, .mono {
 
 .dlc-stages {
     display: grid;
-    grid-template-columns: repeat(9, 1fr);
+    /* Nine stages in a row where they fit; they wrap onto more rows where they don't. */
+    grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
     gap: 8px;
     margin: 0;
     padding: 20px;
@@ -1020,6 +1021,7 @@ code, pre, .mono {
 
 .dlc-stage::before {
     content: counter(dlc);
+    content: counter(dlc) / "";
     color: var(--fg-muted);
     font-size: 0.75rem;
 }
@@ -1060,7 +1062,6 @@ code, pre, .mono {
 
 @media (max-width: 900px) {
     .dlc-stages {
-        grid-template-columns: repeat(3, 1fr);
         padding: 14px;
     }
 }
@@ -1337,10 +1338,14 @@ code, pre, .mono {
         min-width: 6.5rem;
     }
 
-    .cmp-nd { text-align: center; }
+    .cmp-nd {
+        position: relative; /* keeps the hidden text inside the scrolling table */
+        text-align: center;
+    }
 
     .cmp-nd::before {
         content: "–";
+        content: "–" / "";
         color: var(--fg-muted);
     }
 

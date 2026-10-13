@@ -110,6 +110,9 @@ for cast in $casts; do
     head -n1 "$file" | grep -qE '"height": ?34' || err "$cast is not 34 rows high"
     grep -qE '^\[[0-9.]+, ?"m",' "$file" || err "$cast has no chapter markers"
 done
+for id in demo showcase; do
+    section "$id" | grep -qF 'data-demo-player' || err "section #$id has no terminal recording (data-demo-player)"
+done
 grep -qF '<video' "$index" && err "<video> is back; the promo mp4 is retired from the page"
 
 # Social preview: a PNG (crawlers skip SVG) that the export contains.

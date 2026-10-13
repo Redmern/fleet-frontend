@@ -8,7 +8,7 @@
 
         <div class="dlc-panel win-card reveal">
             <div class="win-titlebar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-filename">sub-orchestrator · Ai-DLC · feature profile</span></div>
-            <ol class="dlc-stages" aria-label="Stages of the feature profile">
+            <ol class="dlc-stages" role="list" aria-label="Stages of the feature profile">
                 @foreach (var stage in Stages)
                 {
                     <li class="dlc-stage@(stage.Gate ? " gated" : null)">

@@ -16,10 +16,11 @@
 // the raw output up to `from` is replayed into a headless xterm.js and serialized. Nothing is
 // drawn that fleet did not draw.
 //
-// Scrubbing: the local user's home folder and the Claude plan name are blanked, keeping each line's
-// width, so nothing personal ends up on the site.
+// Scrubbing: the local user name (in paths) and the Claude plan name are replaced, keeping each
+// line's width, so nothing personal ends up on the site.
 import { readFileSync, writeFileSync } from "node:fs";
 import { gunzipSync } from "node:zlib";
+import { userInfo } from "node:os";
 import xtermHeadless from "@xterm/headless";
 import serializeAddon from "@xterm/addon-serialize";
 
@@ -32,9 +33,13 @@ const lines = (rawPath.endsWith(".gz") ? gunzipSync(raw) : raw).toString("utf8")
 const header = JSON.parse(lines[0]);
 const events = lines.slice(1).map(l => JSON.parse(l)).filter(e => e[1] === "o");
 
+// The user name is swapped for a placeholder of the same length wherever it appears as a path
+// segment. fleet redraws lines in pieces, so "/home/" is not always in the same write.
+const user = process.env.SCRUB_USER || userInfo().username;
+const placeholder = (user.length === 3 ? "you" : "user").padEnd(user.length, "_").slice(0, user.length);
+const userSegment = new RegExp(`/${user.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?=/)`, "g");
 const scrubs = [
-    // "/home/<user>/.local/bin/claude" -> "~/.local/bin/claude" plus spaces, so columns stay put.
-    [/\/home\/[a-z0-9_-]+\/(\.local\/bin\/[a-z]+)/g, (m, rest) => "~/" + rest + " ".repeat(m.length - 2 - rest.length)],
+    [userSegment, () => "/" + placeholder],
     [/ · Claude (Max|Pro|Team|Enterprise)/g, m => " ".repeat(m.length)],
 ];
 const scrub = text => scrubs.reduce((t, [re, fn]) => t.replace(re, fn), text);
@@ -109,6 +114,8 @@ for (const part of edit.chapters.flatMap(c => c.parts)) {
     clock += Math.min((part.to - last) / speed, maxGap) + (part.hold ?? 0);
 }
 
+// The player stops at the last event, so the final hold needs an event of its own.
+out.push(JSON.stringify([round(clock), "o", ""]));
 writeFileSync(third, out.join("\n") + "\n");
 console.log(`wrote ${third}: ${round(clock)} s, ${out.length - 1} events`);
 
